@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Environment variables - JANGAN upload ke GitHub
+.env
+
+# Upload files
+uploads/posters/*
+!uploads/posters/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
