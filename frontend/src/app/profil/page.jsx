@@ -7,7 +7,7 @@ import { authAPI } from '@/lib/api';
 import Navbar from '@/components/layout/Navbar';
 import {
   Camera, Plus, X, Loader2, TriangleAlert, CircleCheck,
-  IdCard, AtSign, Phone, MessageCircle, Medal, Save
+  UserCircle, AtSign, Phone, MessageCircle, Medal, Save
 } from 'lucide-react';
 
 export default function ProfilPage() {
@@ -137,7 +137,7 @@ export default function ProfilPage() {
 
               <div className="card p-6">
                 <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <IdCard className="h-4 w-4 text-brand-600" /> Data Diri
+                  <UserCircle className="h-4 w-4 text-brand-600" /> Data Diri
                 </h2>
                 <div className="space-y-4">
                   <div>

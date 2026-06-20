@@ -34,7 +34,7 @@ export default function LoginPage() {
           <h2 className="text-3xl font-bold text-white mb-4">Selamat Datang di AMBAchamp</h2>
           <p className="text-brand-200 text-sm leading-relaxed">
             Platform kompetisi terlengkap untuk mahasiswa. Temukan lomba, cari tim, dan raih prestasi.
-          </p>
+          </p>  
         </div>
       </div>
 

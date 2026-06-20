@@ -68,31 +68,27 @@ export default function DashboardPage() {
 
       <main className="container-main py-8 flex-1">
         {/* ── Hero purple card ── */}
-        <div className="relative rounded-3xl overflow-hidden mb-8 bg-brand-gradient p-8 md:p-10">
-          {/* Subtle background decoration */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute -top-12 -right-12 w-64 h-64 rounded-full bg-white" />
-            <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full bg-white" />
-          </div>
+        <div className="relative rounded-3xl overflow-hidden mb-8 p-8 md:p-10"
+          style={{ background: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)' }}>
           <div className="relative max-w-lg">
-            <p className="text-amber-300 text-sm font-medium mb-2 flex items-center gap-1.5">
-              <Trophy className="h-4 w-4 text-amber-300" />
+            <p className="text-brand-700 text-sm font-semibold mb-2 flex items-center gap-1.5">
+              <Trophy className="h-4 w-4 text-brand-600" />
               Temukan panggung juaramu
             </p>
-            <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
-              Satu Platform Untuk<br />Segala Prestasimu.
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              Satu Platform Untuk<br /><span className="text-brand-700">Segala Prestasimu.</span>
             </h1>
-            <p className="text-white/90 text-sm leading-relaxed mb-7 max-w-md">
+            <p className="text-gray-700 text-sm leading-relaxed mb-7 max-w-md">
               AmbaChamp mempermudah kamu mencari lomba valid, menemukan rekan tim yang tepat, dan mengelola portofolio prestasimu dalam satu tempat.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link href="/lomba"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white text-brand-700 font-semibold text-sm px-6 py-3 hover:bg-brand-50 transition shadow-lg">
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 text-white font-semibold text-sm px-6 py-3 hover:bg-brand-700 transition shadow-lg">
                 Cari Lomba Sekarang
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link href="/teammate"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 text-white font-semibold text-sm px-6 py-3 hover:bg-white/10 transition">
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-300 text-brand-700 font-semibold text-sm px-6 py-3 hover:bg-brand-100 transition">
                 Cari Tim
               </Link>
             </div>

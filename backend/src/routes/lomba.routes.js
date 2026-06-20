@@ -10,7 +10,7 @@ const { body } = require('express-validator');
 const validateLomba = [
   body('judul').notEmpty().withMessage('Judul lomba wajib diisi.'),
   body('deskripsi').notEmpty().withMessage('Deskripsi wajib diisi.'),
-  body('kategori').isIn(['software','data_science','cyber_security','design','bisnis','lainnya']).withMessage('Kategori tidak valid.'),
+  body('kategori').isIn(['teknologi_digital','sains_riset','olahraga','seni_kreatif']).withMessage('Kategori tidak valid.'),
   body('tingkat').isIn(['kampus','nasional','internasional']).withMessage('Tingkat tidak valid.'),
   body('deadline_pendaftaran').isDate().withMessage('Format tanggal deadline tidak valid.'),
 ];

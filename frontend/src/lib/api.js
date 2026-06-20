@@ -67,6 +67,7 @@ export const wishlistAPI = {
 export const teammateAPI = {
   getAll:    (params)     => api.get('/teammate', { params }),
   getById:   (id)         => api.get(`/teammate/${id}`),
+  getMyApplications: ()   => api.get('/teammate/my-applications'),
   create:    (data)       => api.post('/teammate', data),
   close:     (id)         => api.put(`/teammate/${id}/close`),
   apply:     (postId, data) => api.post(`/teammate/${postId}/apply`, data),
