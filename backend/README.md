@@ -73,7 +73,7 @@ POST http://localhost:5000/api/auth/login
 Body (JSON):
 {
   "email": "admin@ambachamp.id",
-  "password": "password"
+  "password": "admin123"
 }
 ```
 Salin token dari response, lalu pakai di header:

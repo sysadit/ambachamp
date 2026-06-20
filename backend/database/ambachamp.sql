@@ -123,11 +123,11 @@ CREATE TABLE IF NOT EXISTS notifikasi (
 
 -- ============================================================
 -- SEED DATA: Admin default
--- Password: admin123 (akan di-hash oleh bcrypt saat runtime)
+-- Password: admin123
 -- ============================================================
 INSERT INTO users (nama, email, password, role) VALUES
-('Admin AMBAchamp', 'admin@ambachamp.id', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
--- Password di atas = 'password' dalam bcrypt hash
+('Admin AMBAchamp', 'admin@ambachamp.id', '$2a$10$1.IXaHuKrIGLq0nKRYnG9OycqIUdddugAKIleqh0vkUppCmvOnebm', 'admin');
+-- Password di atas = 'admin123' dalam bcrypt hash
 -- Ganti password setelah pertama login via API
 
 -- ============================================================
