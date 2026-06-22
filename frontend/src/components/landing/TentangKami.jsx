@@ -5,10 +5,10 @@ const teamMembers = [
     name: "Rois Azzam Shiddiq",
     nim: "0110224156",
     role: "Project Manager",
-    image: "https://images.unsplash.com/photo-1544168190-79c17527004f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMG1hbGUlMjBkZXZlbG9wZXIlMjBwb3J0cmFpdHxlbnwxfHx8fDE3ODIxMzkyOTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    github: "https://github.com/",
-    linkedin: "https://linkedin.com/",
-    instagram: "https://instagram.com/"
+    image: "/images/teams/Rois.jpeg",
+    github: "https://github.com/Roisazzshid/",
+    linkedin: "https://www.linkedin.com/in/rois-azzam-shiddiq-73a81735a?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+    instagram: "https://www.instagram.com/issa.5_?igsh=MTg3b3d4d2M3MGwxYw=="
   },
   {
     name: "Sayed Muhammad Qadri",
@@ -41,7 +41,7 @@ const teamMembers = [
     name: "Adit Hermansyah",
     nim: "0110224092",
     role: "Designer & Developer",
-    image: "https://images.unsplash.com/photo-1681097561932-36d0df02b379?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMG1hbGUlMjBjcmVhdGl2ZSUyMHBvcnRyYWl0JTIwYXNpYW58ZW58MXx8fHwxNzgyMTM5MjkzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "images/teams/Adit.jpeg",
     github: "https://github.com/",
     linkedin: "https://linkedin.com/",
     instagram: "https://instagram.com/"
@@ -50,10 +50,10 @@ const teamMembers = [
     name: "Muhamad Bilal Fatiha",
     nim: "0110224182",
     role: "Designer & Developer",
-    image: "https://images.unsplash.com/photo-1758600587683-d86675a2f6e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMGFzaWFuJTIwd29tYW4lMjBiZWF1dGlmdWwlMjBzbWlsZSUyMHBvcnRyYWl0fGVufDF8fHx8MTc4MjEzOTI5M3ww&ixlib=rb-4.1.0&q=80&w=1080",
-    github: "https://github.com/",
+    image: "images/teams/Bilal.jpeg",
+    github: "https://github.com/Treesaken",
     linkedin: "https://linkedin.com/",
-    instagram: "https://instagram.com/"
+    instagram: "https://instagram.com/mhmdbilalfath"
   },
   {
     name: "Muhamad Aditia",
