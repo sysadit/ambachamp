@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
     // Redirect sesuai role
     if (userData.role === 'admin')         router.push('/admin/dashboard');
     else if (userData.role === 'penyelenggara') router.push('/penyelenggara/dashboard');
-    else router.push('/dashboard');
+    else router.push('/');
 
     return userData;
   }, [router]);
