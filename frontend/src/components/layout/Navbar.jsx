@@ -2,16 +2,16 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // Pengganti fitur isActive
+import { usePathname } from "next/navigation"; 
 import { useAuth } from "@/context/AuthContext";
 import { Trophy, Search, Users, UserCircle, ShieldCheck, Bell, Clock, CheckCircle2, UserPlus, Check, ChevronDown, LogOut } from "lucide-react";
 
 export default function Navbar() {
   const [showNotif, setShowNotif] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const notifRef = useRef(null); // Menghapus <HTMLDivElement>
+  const notifRef = useRef(null); 
   const profileRef = useRef(null);
-  const pathname = usePathname(); // Untuk mengecek halaman aktif
+  const pathname = usePathname(); 
   const { user, loading, logout } = useAuth();
 
   useEffect(() => {
@@ -52,19 +52,25 @@ export default function Navbar() {
               href="/explore" 
               className={`flex items-center gap-2 font-medium transition-colors ${pathname === '/explore' ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'}`}
             >
-              <Search className="h-4 w-4" /> Cari Lomba
+              Kategori
             </Link>
             <Link 
               href="/teammate" 
               className={`flex items-center gap-2 font-medium transition-colors ${pathname === '/teammates' ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'}`}
             >
-              <Users className="h-4 w-4" /> Teammate Finder
+              Rekomendasi
             </Link>
             <Link 
               href="/admin" 
               className={`flex items-center gap-2 font-medium transition-colors ${pathname === '/admin' ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'}`}
             >
-              <ShieldCheck className="h-4 w-4" /> Admin Verifikasi
+              Fitur
+            </Link>
+            <Link 
+              href="#tentang-kami" 
+              className={`flex items-center gap-2 font-medium transition-colors ${pathname === '/admin' ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'}`}
+            >
+              Tentang Kami
             </Link>
           </nav>
 

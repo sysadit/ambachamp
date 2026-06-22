@@ -54,6 +54,9 @@ const CATEGORY_COLOR = {
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
 import Hero from '@/components/landing/Hero';
+import Stats from '@/components/landing/Stats';
+import Kategori from '@/components/landing/Kategori';
+import TentangKami from '@/components/landing/TentangKami';
 import Testimonials from '@/components/landing/Testimonials';
 import RecommendedLomba from '@/components/landing/RecomendedLomba';
 
@@ -67,83 +70,25 @@ export default function HomePage() {
         
         <Hero />
 
+        <Stats />
+
+        <div className="mt-24" id="kategori">
+          <Kategori />
+        </div>
+
         <div className="mt-24">
           <RecommendedLomba />
+        </div>
+
+        <div className="mt-20" id="tentang-kami">
+          <TentangKami />
         </div>
 
         <div className="mt-20">
           <Testimonials />
         </div>
 
-      </main>
-
-
-      {/* ── CTA ──────────────────────────────────────────── */}
-      <section className="bg-[#05050f] py-20">
-        <div className="container-main text-center">
-          <h2 className="text-3xl font-bold text-white mb-3">Siap Menjadi Juara Berikutnya?</h2>
-          <p className="text-white/50 text-sm mb-8 max-w-md mx-auto">Bergabung dengan ribuan mahasiswa ambisius Indonesia dan raih berbagai prestasi Anda bersama kami.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/auth/register" className="btn-primary px-8 py-3 text-sm">
-              Daftar Gratis Sekarang
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link href="/lomba" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-8 py-3 text-sm font-semibold text-white/70 hover:border-white/30 hover:text-white transition">
-              Halaman Tim Kami
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── ABOUT ────────────────────────────────────────── */}
-      <section id="about" className="bg-white py-20">
-        <div className="container-main">
-          <div className="max-w-3xl mx-auto text-center">
-            <span className="text-sm font-semibold text-brand-600 uppercase tracking-wider">Tentang Kami</span>
-            <h2 className="text-3xl font-bold text-gray-900 mt-2 mb-5">Apa itu AMBAChamp?</h2>
-            <p className="text-gray-600 leading-relaxed mb-4">
-              AMBAChamp adalah platform informasi lomba yang dibuat untuk mempermudah mahasiswa menemukan kompetisi yang valid dan terpercaya. Lewat satu platform, mahasiswa bisa menjelajahi lomba sesuai bidangnya, menyimpan lomba favorit, sampai mencari rekan satu tim lintas disiplin.
-            </p>
-            <p className="text-gray-600 leading-relaxed">
-              Kami juga membantu penyelenggara menjangkau lebih banyak peserta, dengan jaminan setiap informasi diverifikasi admin sebelum tayang. Tujuannya satu: bikin setiap mahasiswa punya kesempatan yang sama untuk berprestasi.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── CONTACT ──────────────────────────────────────── */}
-      <section id="contact" className="bg-[#0a0a1a] py-20 text-white">
-        <div className="container-main">
-          <div className="text-center mb-12">
-            <span className="text-sm font-semibold text-brand-400 uppercase tracking-wider">Hubungi Kami</span>
-            <h2 className="text-3xl font-bold mt-2">Punya Pertanyaan?</h2>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-4xl mx-auto">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
-              <Phone className="h-6 w-6 text-brand-400 mx-auto mb-3" />
-              <p className="text-xs text-white/40 mb-1">Telepon</p>
-              <p className="text-sm font-medium">+62 21 1234567</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
-              <Mail className="h-6 w-6 text-brand-400 mx-auto mb-3" />
-              <p className="text-xs text-white/40 mb-1">Email</p>
-              <p className="text-sm font-medium break-all">ambachamp@outlook.com</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
-              <Instagram className="h-6 w-6 text-brand-400 mx-auto mb-3" />
-              <p className="text-xs text-white/40 mb-1">Instagram</p>
-              <p className="text-sm font-medium">@capuchino4life</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
-              <MapPin className="h-6 w-6 text-brand-400 mx-auto mb-3" />
-              <p className="text-xs text-white/40 mb-1">Kantor</p>
-              <p className="text-sm font-medium">Jl. Prof Lafran Pane / RTM Kelapa Dua, Depok</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FAQ ──────────────────────────────────────────── */}
+        {/* ── FAQ ──────────────────────────────────────────── */}
       <section id="faq" className="bg-white py-20">
         <div className="container-main">
           <div className="text-center mb-12">
@@ -158,12 +103,13 @@ export default function HomePage() {
         </div>
       </section>
 
+      </main>
+
       <Footer />
     </div>
   );
 }
 
-// satu baris FAQ yang bisa dibuka-tutup
 function FaqRow({ q, a }) {
   const [open, setOpen] = useState(false);
   return (
