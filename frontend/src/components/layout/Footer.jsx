@@ -1,42 +1,44 @@
-// src/components/layout/Footer.jsx
 import Link from 'next/link';
 import { Trophy } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-400 mt-auto">
-      <div className="container-main py-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <div className="flex items-center gap-2 text-white font-bold text-lg mb-3">
-              <Trophy className="h-6 w-6 text-accent-500" />
-              <span>AMBA<span className="text-accent-500">champ</span></span>
+    /* ── FOOTER ───────────────────────────────────────── */
+
+      <footer className="bg-[#05050f] border-t border-white/5">
+        <div className="container-main py-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+            <div className="col-span-2 md:col-span-1">
+              <div className="flex items-center gap-2 mb-3">
+                <Trophy className="h-6 w-6 text-brand-400" />
+                <span className="font-bold text-white text-lg">AMBAchamp</span>
+              </div>
+              <p className="text-white/40 text-sm leading-relaxed">Platform kompetisi terlengkap untuk mahasiswa dan profesional.</p>
             </div>
-            <p className="text-sm leading-relaxed">
-              Platform informasi lomba mahasiswa. Temukan kompetisi, verifikasi info, dan cari rekan tim terbaikmu.
-            </p>
+            {[
+              { title:'Platform', links:['Cari Lomba', 'Teammate Finder', 'Verifikasi Admin', 'Dashboard'] },
+              { title:'Company',  links:['About', 'Careers', 'Blog', 'Newsletter'] },
+              { title:'Contact',  links:['Support', 'Privacy Policy', 'Terms of Service'] },
+            ].map(col => (
+              <div key={col.title}>
+                <h4 className="text-white font-semibold text-sm mb-4">{col.title}</h4>
+                <ul className="space-y-2.5">
+                  {col.links.map(l => (
+                    <li key={l}><Link href="#" className="text-white/40 hover:text-white/80 text-sm transition">{l}</Link></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <div>
-            <h4 className="text-white font-semibold mb-3 text-sm">Navigasi</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/lomba"    className="hover:text-white transition">Cari Lomba</Link></li>
-              <li><Link href="/teammate" className="hover:text-white transition">Cari Tim</Link></li>
-              <li><Link href="/auth/register" className="hover:text-white transition">Daftar Akun</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-semibold mb-3 text-sm">Tentang</h4>
-            <ul className="space-y-2 text-sm">
-              <li>Capuchino4life — Kelompok 4</li>
-              <li>Program Studi Teknik Informatika</li>
-              <li>STT Nurul Fikri</li>
-            </ul>
+          <div className="border-t border-white/5 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+            <p className="text-white/30 text-xs">© 2026 AMBAchamp. Causing MBA Excellence.</p>
+            <div className="flex gap-4">
+              <Link href="#" className="text-white/30 hover:text-white/60 text-xs transition">Privacy Policy</Link>
+              <Link href="#" className="text-white/30 hover:text-white/60 text-xs transition">Terms of Service</Link>
+            </div>
           </div>
         </div>
-        <div className="mt-8 pt-6 border-t border-slate-800 text-center text-xs">
-          © 2025 AMBAchamp. Dibuat dengan ❤️ oleh Capuchino4life untuk tugas Manajemen Proyek.
-        </div>
-      </div>
-    </footer>
+      </footer>
+
   );
 }

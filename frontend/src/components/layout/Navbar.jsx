@@ -1,181 +1,148 @@
-'use client';
-// src/components/layout/Navbar.jsx — Platform navbar (logged-in state)
+'use client'; // Wajib di Next.js untuk file dengan hooks
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import {
-  Trophy, Search, Users, ShieldCheck, Bell, ChevronDown,
-  LogOut, User, LayoutDashboard, Bookmark, Menu, X
-} from 'lucide-react';
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation"; // Pengganti fitur isActive
+import { Trophy, Search, Users, UserCircle, ShieldCheck, Bell, Clock, CheckCircle2, UserPlus, Check } from "lucide-react";
 
 export default function Navbar() {
-  const { user, logout }          = useAuth();
-  const pathname                  = usePathname();
-  const [profileOpen, setProfile] = useState(false);
-  const [mobileOpen,  setMobile]  = useState(false);
+  const [showNotif, setShowNotif] = useState(false);
+  const notifRef = useRef(null); // Menghapus <HTMLDivElement>
+  const pathname = usePathname(); // Untuk mengecek halaman aktif
 
-  const isActive = (href) => pathname === href || pathname.startsWith(href + '/');
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setShowNotif(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-  const dashHref =
-    user?.role === 'admin'           ? '/admin/dashboard'
-    : user?.role === 'penyelenggara' ? '/penyelenggara/dashboard'
-    : '/dashboard';
+  const mockNotifs = [
+    { id: 1, title: "Batas Waktu Pendaftaran", desc: "Pendaftaran Nasional Hackathon 2026 sisa 2 hari lagi!", time: "2 jam yang lalu", read: false, icon: Clock, color: "text-rose-600", bg: "bg-rose-100" },
+    { id: 2, title: "Lamaran Tim Diterima", desc: "Lamaranmu untuk posisi Frontend di tim 'Syntax Error' telah diterima.", time: "5 jam yang lalu", read: false, icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-100" },
+    { id: 3, title: "Ada Lamaran Baru", desc: "Budi Santoso melamar sebagai UX Researcher di tim UI/UX kamu.", time: "1 hari yang lalu", read: true, icon: UserPlus, color: "text-purple-600", bg: "bg-purple-100" },
+  ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
-      <div className="container-main flex h-16 items-center gap-4">
-
-        {/* Logo */}
-        <Link href={user ? dashHref : '/'} className="flex items-center gap-2 mr-4">
-          <Trophy className="h-6 w-6 text-brand-600" />
-          <span className="font-bold text-brand-700 text-lg tracking-tight">AmbaChamp</span>
-        </Link>
-
-        {/* Nav links — desktop */}
-        <div className="hidden md:flex items-center gap-1 flex-1">
-          {(!user || user.role === 'mahasiswa') && (
-            <>
-              <Link href="/lomba"
-                className={isActive('/lomba') ? 'nav-link-active' : 'nav-link'}>
-                <Search className="h-4 w-4" />
-                Cari Lomba
-              </Link>
-
-              <Link href="/teammate"
-                className={isActive('/teammate') ? 'nav-link-active' : 'nav-link'}>
-                <Users className="h-4 w-4" />
-                Pusat Kolaborasi
-              </Link>
-            </>
-          )}
-
-          {user?.role === 'admin' && (
-            <>
-              <Link href="/admin/dashboard"
-                className={isActive('/admin/dashboard') ? 'nav-link-active' : 'nav-link'}>
-                <LayoutDashboard className="h-4 w-4" />
-                Dashboard
-              </Link>
-              <Link href="/admin/lomba"
-                className={isActive('/admin/lomba') ? 'nav-link-active' : 'nav-link'}>
-                <ShieldCheck className="h-4 w-4" />
-                Admin Verifikasi
-              </Link>
-            </>
-          )}
-          {user?.role === 'penyelenggara' && (
-            <Link href="/penyelenggara/dashboard"
-              className={isActive('/penyelenggara') ? 'nav-link-active' : 'nav-link'}>
-              <LayoutDashboard className="h-4 w-4" />
-              Dashboard Saya
+    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 text-indigo-600">
+            <Trophy className="h-8 w-8" />
+            <span className="font-extrabold text-2xl tracking-tight">AmbaChamp</span>
+          </Link>
+          
+          {/* Navigasi Utama */}
+          <nav className="hidden md:flex gap-8">
+            <Link 
+              href="/explore" 
+              className={`flex items-center gap-2 font-medium transition-colors ${pathname === '/explore' ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'}`}
+            >
+              <Search className="h-4 w-4" /> Cari Lomba
             </Link>
-          )}
-        </div>
+            <Link 
+              href="/teammate" 
+              className={`flex items-center gap-2 font-medium transition-colors ${pathname === '/teammates' ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'}`}
+            >
+              <Users className="h-4 w-4" /> Teammate Finder
+            </Link>
+            <Link 
+              href="/admin" 
+              className={`flex items-center gap-2 font-medium transition-colors ${pathname === '/admin' ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'}`}
+            >
+              <ShieldCheck className="h-4 w-4" /> Admin Verifikasi
+            </Link>
+          </nav>
 
-        {/* Right side */}
-        <div className="ml-auto flex items-center gap-2">
-          {user ? (
-            <>
-              {/* Bell */}
-              <Link href="/notifikasi"
-                className="relative p-2 rounded-xl text-gray-500 hover:text-brand-600 hover:bg-brand-50 transition">
+          {/* Area Kanan */}
+          <div className="flex items-center gap-4">
+            <Link 
+              href="/auth/login" 
+              className="hidden sm:inline-flex font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+            >
+              Masuk
+            </Link>
+            <Link 
+              href="/auth/register" 
+              className="hidden sm:inline-flex bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-sm"
+            >
+              Daftar
+            </Link>
+
+            <div className="h-6 w-px bg-slate-200 hidden sm:block mx-2"></div>
+
+            {/* Notifikasi Dropdown */}
+            <div className="relative" ref={notifRef}>
+              <button 
+                onClick={() => setShowNotif(!showNotif)}
+                className={`relative p-2 transition-colors rounded-full ${showNotif ? 'text-indigo-600 bg-slate-100' : 'text-slate-500 hover:text-indigo-600 hover:bg-slate-100'}`}
+              >
                 <Bell className="h-5 w-5" />
-              </Link>
+                <span className="absolute top-1 right-1 h-2.5 w-2.5 bg-rose-500 rounded-full border-2 border-white"></span>
+              </button>
 
-              {/* Profile dropdown */}
-              <div className="relative">
-                <button onClick={() => setProfile(!profileOpen)}
-                  className="flex items-center gap-2 rounded-xl px-3 py-2 border border-gray-200 hover:border-brand-300 hover:bg-brand-50 transition text-sm font-medium text-gray-700">
-                  <div className="w-7 h-7 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                    {user.nama?.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="hidden sm:block">Profil Saya</span>
-                  <ChevronDown className={`h-3.5 w-3.5 text-gray-400 transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
-                </button>
-
-                {profileOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl border border-gray-100 shadow-lg py-1 z-50">
-                    <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="font-semibold text-gray-800 text-sm">{user.nama}</p>
-                      <p className="text-xs text-gray-400 capitalize">{user.role}</p>
-                    </div>
-                    <Link href={dashHref} onClick={() => setProfile(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition">
-                      <LayoutDashboard className="h-4 w-4" /> Dashboard
-                    </Link>
-                    {(user.role === 'mahasiswa' || user.role === 'penyelenggara') && (
-                      <Link href="/profil" onClick={() => setProfile(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition">
-                        <User className="h-4 w-4" /> Profil Saya
-                      </Link>
-                    )}
-                    {user.role === 'mahasiswa' && (
-                      <Link href="/wishlist" onClick={() => setProfile(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition">
-                        <Bookmark className="h-4 w-4" /> Wishlist
-                      </Link>
-                    )}
-                    <button onClick={() => { setProfile(false); logout(); }}
-                      className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition border-t border-gray-100 mt-1">
-                      <LogOut className="h-4 w-4" /> Keluar
+              {showNotif && (
+                <div className="absolute right-0 top-full mt-3 w-[320px] sm:w-[380px] bg-white rounded-3xl shadow-xl border border-slate-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200">
+                  <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <h3 className="font-extrabold text-slate-900 text-lg">Notifikasi</h3>
+                    <button className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+                      <Check className="h-3.5 w-3.5" /> Tandai dibaca
                     </button>
                   </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="hidden md:flex items-center gap-2">
-              <Link href="/auth/login"    className="btn-ghost text-sm">Masuk</Link>
-              <Link href="/auth/register" className="btn-primary text-sm">Daftar Gratis</Link>
+                  <div className="max-h-[400px] overflow-y-auto divide-y divide-slate-100">
+                    {mockNotifs.map((notif) => (
+                      <div key={notif.id} className={`p-4 flex gap-4 hover:bg-slate-50 transition-colors cursor-pointer ${!notif.read ? 'bg-indigo-50/30' : ''}`}>
+                        <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 ${notif.bg} ${notif.color}`}>
+                          <notif.icon className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex justify-between items-start mb-1">
+                            <h4 className={`text-sm ${!notif.read ? 'font-bold text-slate-900' : 'font-semibold text-slate-700'}`}>
+                              {notif.title}
+                            </h4>
+                            {!notif.read && (
+                              <span className="h-2 w-2 rounded-full bg-indigo-600 shrink-0 mt-1.5"></span>
+                            )}
+                          </div>
+                          <p className="text-sm text-slate-600 leading-relaxed mb-1 line-clamp-2">
+                            {notif.desc}
+                          </p>
+                          <span className="text-xs font-medium text-slate-400">
+                            {notif.time}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-3 border-t border-slate-100 bg-slate-50/50 text-center">
+                    <Link 
+                      href="/notifications" 
+                      onClick={() => setShowNotif(false)}
+                      className="text-sm font-bold text-indigo-600 hover:text-indigo-700 block w-full"
+                    >
+                      Lihat semua notifikasi
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
 
-          {/* Mobile menu button */}
-          <button className="md:hidden p-2 rounded-xl hover:bg-gray-100 text-gray-600"
-            onClick={() => setMobile(!mobileOpen)}>
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+            {/* Profil */}
+            <Link 
+              href="/profil" 
+              className={`flex items-center gap-2 font-medium transition-colors ${pathname === '/profil' ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'}`}
+            >
+              <UserCircle className="h-6 w-6" />
+              <span className="hidden sm:inline">Profil Saya</span>
+            </Link>
+          </div>
         </div>
       </div>
-
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1">
-          {(!user || user.role === 'mahasiswa') && (
-            <>
-              <Link href="/lomba" onClick={() => setMobile(false)} className={isActive('/lomba') ? 'nav-link-active' : 'nav-link'}>
-                <Search className="h-4 w-4" /> Cari Lomba
-              </Link>
-              <Link href="/teammate" onClick={() => setMobile(false)} className={isActive('/teammate') ? 'nav-link-active' : 'nav-link'}>
-                <Users className="h-4 w-4" /> Pusat Kolaborasi
-              </Link>
-            </>
-          )}
-          {user?.role === 'admin' && (
-            <>
-              <Link href="/admin/dashboard" onClick={() => setMobile(false)} className="nav-link">
-                <LayoutDashboard className="h-4 w-4" /> Dashboard
-              </Link>
-              <Link href="/admin/lomba" onClick={() => setMobile(false)} className="nav-link">
-                <ShieldCheck className="h-4 w-4" /> Admin Verifikasi
-              </Link>
-            </>
-          )}
-          {user?.role === 'penyelenggara' && (
-            <Link href="/penyelenggara/dashboard" onClick={() => setMobile(false)} className="nav-link">
-              <LayoutDashboard className="h-4 w-4" /> Dashboard Saya
-            </Link>
-          )}
-          {!user && (
-            <div className="flex gap-2 pt-3 border-t border-gray-100">
-              <Link href="/auth/login" className="btn-secondary flex-1 text-sm">Masuk</Link>
-              <Link href="/auth/register" className="btn-primary flex-1 text-sm">Daftar</Link>
-            </div>
-          )}
-        </div>
-      )}
-    </nav>
+    </header>
   );
 }

@@ -51,70 +51,26 @@ const CATEGORY_COLOR = {
   'Design':        'bg-purple-500',
 };
 
+import Footer from '@/components/layout/Footer';
+import Navbar from '@/components/layout/Navbar';
+import Hero from '@/components/landing/Hero';
+import Testimonials from '@/components/landing/Testimonials';
+
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#05050f] text-white font-sans">
+    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col">
 
-      {/* ── NAVBAR (landing dark) ───────────────────────── */}
-      <nav className="sticky top-0 z-50 border-b border-white/5 bg-[#05050f]/80 backdrop-blur-xl">
-        <div className="container-main flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-lg font-bold text-white">
-            <Trophy className="h-6 w-6 text-brand-400" />
-            <span className="text-white">AMBA<span className="text-brand-400">Champ</span></span>
-          </Link>
-          <div className="hidden md:flex items-center gap-1">
-            <Link href="/"          className="px-4 py-2 text-sm text-white/70 hover:text-white transition rounded-lg hover:bg-white/5">Home</Link>
-            <a href="#about"        className="px-4 py-2 text-sm text-white/70 hover:text-white transition rounded-lg hover:bg-white/5">About</a>
-            <a href="#contact"      className="px-4 py-2 text-sm text-white/70 hover:text-white transition rounded-lg hover:bg-white/5">Contact Us</a>
-            <a href="#faq"          className="px-4 py-2 text-sm text-white/70 hover:text-white transition rounded-lg hover:bg-white/5">FAQ</a>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/auth/login"    className="px-4 py-2 text-sm text-white/80 hover:text-white transition">Login</Link>
-            <Link href="/auth/register" className="btn-primary text-sm">Daftar</Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
-      {/* ── HERO ─────────────────────────────────────────── */}
-      <section className="relative min-h-[88vh] flex items-end overflow-hidden">
-        {/* Background — dark with subtle grid */}
-        <div className="absolute inset-0 bg-[#05050f]">
-          <div className="absolute inset-0" style={{ backgroundImage:'radial-gradient(circle at 20% 50%, rgba(124,58,237,.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139,92,246,.08) 0%, transparent 40%)' }} />
+      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-8 pb-12">
+        
+        <Hero />
+
+        <div className="mt-20">
+          <Testimonials />
         </div>
 
-        <div className="container-main relative z-10 pb-24 pt-20">
-          <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-700/40 bg-brand-900/30 px-4 py-1.5 text-xs font-medium text-brand-300 mb-6">
-              <Zap className="h-3 w-3" />
-              Platform No. 1 untuk Mahasiswa Berprestasi
-            </div>
-            <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-5">
-              Semua Bisa Jadi <span className="text-brand-400">Champion!</span>
-            </h1>
-            <p className="text-white/60 text-base leading-relaxed mb-8">
-              Platform kompetisi terlengkap untuk mahasiswa dan profesional. Temukan peluang global, bentuk tim impian, dan tunjukkan keahlian Anda di panggung dunia.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link href="/auth/register" className="btn-primary text-sm px-6 py-3">
-                Daftar Sekarang
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link href="/lomba" className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-6 py-3 text-sm font-semibold text-white/80 hover:border-white/30 hover:text-white transition">
-                <Search className="h-4 w-4" />
-                Lihat Panduan
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Floating image */}
-        <div className="absolute right-8 bottom-8 hidden lg:block">
-          <div className="w-64 h-44 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
-            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80"
-              alt="Team working" className="w-full h-full object-cover opacity-90" />
-          </div>
-        </div>
-      </section>
+      </main>
 
       {/* ── STATS BAR ───────────────────────────────────── */}
       <section className="bg-[#0a0a1a] border-y border-white/5">
@@ -218,35 +174,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ─────────────────────────────────── */}
-      <section className="bg-white py-20">
-        <div className="container-main">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Apa Kata Para Juara?</h2>
-            <p className="text-gray-500 text-sm">Kisah sukses dari mereka yang berhasil melempar batas dan membangun koneksi melalui AMBAChamp.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map(t => (
-              <div key={t.name} className="card p-6">
-                <div className="flex gap-0.5 mb-4">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />)}
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-4">"{t.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                    <p className="text-gray-400 text-xs">{t.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── CTA ──────────────────────────────────────────── */}
       <section className="bg-[#05050f] py-20">
         <div className="container-main text-center">
@@ -327,41 +254,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FOOTER ───────────────────────────────────────── */}
-      <footer className="bg-[#05050f] border-t border-white/5">
-        <div className="container-main py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 mb-3">
-                <Trophy className="h-6 w-6 text-brand-400" />
-                <span className="font-bold text-white text-lg">AMBAchamp</span>
-              </div>
-              <p className="text-white/40 text-sm leading-relaxed">Platform kompetisi terlengkap untuk mahasiswa dan profesional.</p>
-            </div>
-            {[
-              { title:'Platform', links:['Cari Lomba', 'Teammate Finder', 'Verifikasi Admin', 'Dashboard'] },
-              { title:'Company',  links:['About', 'Careers', 'Blog', 'Newsletter'] },
-              { title:'Contact',  links:['Support', 'Privacy Policy', 'Terms of Service'] },
-            ].map(col => (
-              <div key={col.title}>
-                <h4 className="text-white font-semibold text-sm mb-4">{col.title}</h4>
-                <ul className="space-y-2.5">
-                  {col.links.map(l => (
-                    <li key={l}><Link href="#" className="text-white/40 hover:text-white/80 text-sm transition">{l}</Link></li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <div className="border-t border-white/5 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
-            <p className="text-white/30 text-xs">© 2026 AMBAchamp. Causing MBA Excellence.</p>
-            <div className="flex gap-4">
-              <Link href="#" className="text-white/30 hover:text-white/60 text-xs transition">Privacy Policy</Link>
-              <Link href="#" className="text-white/30 hover:text-white/60 text-xs transition">Terms of Service</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -6,7 +6,7 @@ export const metadata = {
   description: 'Temukan lomba, verifikasi info, dan cari rekan tim terbaikmu di AMBAchamp.',
   icons: { icon: '/favicon.ico' },
   other: {
-    google: 'notranslate', // biar chrome ga auto-translate, soalnya bikin react crash (removeChild error)
+    google: 'notranslate', 
   },
 };
 
