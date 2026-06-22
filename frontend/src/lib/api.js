@@ -44,6 +44,7 @@ export const authAPI = {
   updateProfile: (data)   => api.put('/auth/profile', data, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
+  changePassword: (data) => api.put('/auth/change-password', data),
 };
 
 // ─── Lomba API calls ──────────────────────────────────────────────────────────
@@ -65,13 +66,13 @@ export const wishlistAPI = {
 
 // ─── Teammate API calls ───────────────────────────────────────────────────────
 export const teammateAPI = {
-  getAll:    (params)     => api.get('/teammate', { params }),
-  getById:   (id)         => api.get(`/teammate/${id}`),
+  getAllPosts:    (params)     => api.get('/teammate', { params }),
+  getPostById:   (id)         => api.get(`/teammate/${id}`),
   getMyApplications: ()   => api.get('/teammate/my-applications'),
-  create:    (data)       => api.post('/teammate', data),
-  close:     (id)         => api.put(`/teammate/${id}/close`),
-  apply:     (postId, data) => api.post(`/teammate/${postId}/apply`, data),
-  updateApp: (appId, data)  => api.put(`/teammate/applications/${appId}`, data),
+  createPost:    (data)       => api.post('/teammate', data),
+  closePost:     (id)         => api.put(`/teammate/${id}/close`),
+  applyToPost:     (postId, data) => api.post(`/teammate/${postId}/apply`, data),
+  updateApplication: (appId, data)  => api.put(`/teammate/applications/${appId}`, data),
 };
 
 // ─── Notifikasi API calls ─────────────────────────────────────────────────────
@@ -85,7 +86,7 @@ export const notifAPI = {
 // ─── Admin API calls ──────────────────────────────────────────────────────────
 export const adminAPI = {
   getDashboard:   ()          => api.get('/admin/dashboard'),
-  getAllLomba:     (params)    => api.get('/admin/lomba', { params }),
+  getAllLombaAdmin: (params)   => api.get('/admin/lomba', { params }),
   getPendingLomba: ()         => api.get('/admin/lomba/pending'),
   verifyLomba:    (id, data)  => api.put(`/admin/lomba/${id}/verify`, data),
   getAllUsers:     (params)    => api.get('/admin/users', { params }),
