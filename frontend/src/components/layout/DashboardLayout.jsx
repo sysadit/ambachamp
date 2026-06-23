@@ -6,26 +6,28 @@ import { useAuth } from '@/context/AuthContext';
 import Navbar from './Navbar';
 import {
   LayoutDashboard, Search, Bookmark, Users, Bell,
-  Plus, ListChecks, ShieldCheck, UserCog, LogOut
+  Plus, ListChecks, ShieldCheck, UserCog, LogOut, Trophy, FolderKanban
 } from 'lucide-react';
 
 // Sidebar links per role
 const SIDEBAR = {
   mahasiswa: [
     { href: '/dashboard',  icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/lomba',      icon: Search,          label: 'Cari Lomba' },
+    { href: '/lomba',      icon: Search,          label: 'Mencari Lomba' },
     { href: '/wishlist',   icon: Bookmark,        label: 'Wishlist' },
-    { href: '/teammate',   icon: Users,           label: 'Cari Tim' },
     { href: '/notifikasi', icon: Bell,            label: 'Notifikasi' },
   ],
   penyelenggara: [
     { href: '/penyelenggara/dashboard',    icon: LayoutDashboard, label: 'Dashboard' },
+    { href: '/penyelenggara/lomba',        icon: Trophy,          label: 'Lomba Saya' },
     { href: '/penyelenggara/lomba/create', icon: Plus,            label: 'Upload Lomba Baru' },
+    { href: '/penyelenggara/grup',         icon: FolderKanban,    label: 'Grup Tim Peserta' },
     { href: '/notifikasi',                 icon: Bell,            label: 'Notifikasi' },
   ],
   admin: [
     { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/admin/lomba',     icon: ShieldCheck,     label: 'Verifikasi Lomba' },
+    { href: '/admin/all-lomba', icon: ListChecks,      label: 'Semua Lomba' },
     { href: '/admin/users',     icon: UserCog,         label: 'Kelola Pengguna' },
     { href: '/notifikasi',      icon: Bell,            label: 'Notifikasi' },
   ],

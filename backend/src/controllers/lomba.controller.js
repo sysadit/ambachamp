@@ -79,8 +79,8 @@ const createLomba = async (req, res) => {
     const [result] = await db.query(
       `INSERT INTO lomba (judul, deskripsi, kategori, tingkat, biaya_pendaftaran,
         deadline_pendaftaran, tanggal_pelaksanaan, poster, link_pendaftaran,
-        link_sosmed, contact_person, penyelenggara_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        link_sosmed, contact_person, penyelenggara_id, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
       [judul, deskripsi, kategori, tingkat, biaya_pendaftaran,
        deadline_pendaftaran, tanggal_pelaksanaan || null,
        poster, link_pendaftaran || null,

@@ -177,11 +177,16 @@ const applyToPost = async (req, res) => {
 // Pembuat post terima / tolak lamaran
 const updateApplication = async (req, res) => {
   try {
-    const { status } = req.body; // 'diterima' atau 'ditolak'
+    const { status, link_telegram } = req.body; // 'diterima' atau 'ditolak'
     const { appId } = req.params;
 
     if (!['diterima', 'ditolak'].includes(status)) {
       return res.status(400).json({ success: false, message: 'Status tidak valid.' });
+    }
+
+    // kalau diterima, link grup telegram wajib diisi
+    if (status === 'diterima' && (!link_telegram || !link_telegram.trim())) {
+      return res.status(400).json({ success: false, message: 'Link grup Telegram wajib diisi saat menerima pelamar.' });
     }
 
     // Ambil detail lamaran
@@ -201,11 +206,15 @@ const updateApplication = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Hanya pembuat post yang bisa update status lamaran.' });
     }
 
-    await db.query('UPDATE teammate_applications SET status = ? WHERE id = ?', [status, appId]);
+    if (status === 'diterima') {
+      await db.query('UPDATE teammate_applications SET status = ?, link_telegram = ? WHERE id = ?', [status, link_telegram.trim(), appId]);
+    } else {
+      await db.query('UPDATE teammate_applications SET status = ? WHERE id = ?', [status, appId]);
+    }
 
     // Notifikasi ke pelamar
     const pesan = status === 'diterima'
-      ? `Selamat! Lamaran Anda untuk posisi "${apps[0].posisi}" di "${apps[0].judul_post}" telah DITERIMA.`
+      ? `Selamat! Lamaran Anda untuk posisi "${apps[0].posisi}" di "${apps[0].judul_post}" telah DITERIMA. Cek halaman Status Gabung untuk link grup Telegram.`
       : `Maaf, lamaran Anda untuk posisi "${apps[0].posisi}" di "${apps[0].judul_post}" ditolak.`;
 
     await db.query(
@@ -221,7 +230,7 @@ const updateApplication = async (req, res) => {
 };
 
 // GET /api/teammate/my-applications
-// lamaran yang dikirim user. kalau diterima, ikut bawa kontak pembuat
+// lamaran yang dikirim user. kalau diterima, ikut bawa link grup telegram
 const getMyApplications = async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -229,8 +238,7 @@ const getMyApplications = async (req, res) => {
               tp.judul AS judul_post,
               l.judul AS judul_lomba,
               pembuat.nama AS nama_pembuat,
-              CASE WHEN ta.status = 'diterima' THEN pembuat.email    ELSE NULL END AS kontak_email,
-              CASE WHEN ta.status = 'diterima' THEN pembuat.whatsapp ELSE NULL END AS kontak_whatsapp
+              CASE WHEN ta.status = 'diterima' THEN ta.link_telegram ELSE NULL END AS link_telegram
        FROM teammate_applications ta
        JOIN teammate_posts tp ON ta.post_id = tp.id
        JOIN lomba l           ON tp.lomba_id = l.id
@@ -246,4 +254,46 @@ const getMyApplications = async (req, res) => {
   }
 };
 
-module.exports = { getAllPosts, getPostById, createPost, closePost, applyToPost, updateApplication, getMyApplications };
+// GET /api/teammate/penyelenggara/grup
+// penyelenggara lihat semua grup tim yang dibuat mahasiswa di lomba miliknya
+const getGrupPenyelenggara = async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT tp.id, tp.judul, tp.deskripsi, tp.jumlah_anggota_max, tp.status, tp.created_at,
+              l.judul AS judul_lomba,
+              pembuat.nama AS nama_pembuat,
+              (SELECT COUNT(*) FROM teammate_applications ta
+                WHERE ta.post_id = tp.id AND ta.status = 'diterima') AS jumlah_anggota
+       FROM teammate_posts tp
+       JOIN lomba l        ON tp.lomba_id = l.id
+       JOIN users pembuat  ON tp.pembuat_id = pembuat.id
+       WHERE l.penyelenggara_id = ?
+       ORDER BY tp.created_at DESC`,
+      [req.user.id]
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error('[getGrupPenyelenggara]', err);
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan server.' });
+  }
+};
+
+// GET /api/teammate/my-posts — tim/lowongan yang dibuat user (mahasiswa)
+const getMyPosts = async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT tp.*, l.judul AS judul_lomba
+       FROM teammate_posts tp
+       JOIN lomba l ON tp.lomba_id = l.id
+       WHERE tp.pembuat_id = ?
+       ORDER BY tp.created_at DESC`,
+      [req.user.id]
+    );
+    res.json({ success: true, count: rows.length, data: rows });
+  } catch (err) {
+    console.error('[getMyPosts]', err);
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan server.' });
+  }
+};
+
+module.exports = { getAllPosts, getPostById, createPost, closePost, applyToPost, updateApplication, getMyApplications, getGrupPenyelenggara, getMyPosts };
