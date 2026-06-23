@@ -6,8 +6,6 @@ const express = require('express');
 const cors    = require('cors');
 const path    = require('path');
 
-// kalau ada error yang ga ke-handle, jangan sampe server mati total
-// soalnya kalo server mati, semua request berikutnya bakal "Network Error" terus
 process.on('unhandledRejection', (err) => {
   console.error('[unhandledRejection]', err);
 });
@@ -22,13 +20,11 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use(express.json());                        // parse JSON body
-app.use(express.urlencoded({ extended: true })); // parse form data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Serve static files (poster lomba yang diupload)
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// ─── Routes ──────────────────────────────────────────────────────────────────
 app.use('/api/auth',        require('./routes/auth.routes'));
 app.use('/api/lomba',       require('./routes/lomba.routes'));
 app.use('/api/wishlist',    require('./routes/wishlist.routes'));
@@ -36,7 +32,6 @@ app.use('/api/teammate',    require('./routes/teammate.routes'));
 app.use('/api/notifikasi',  require('./routes/notifikasi.routes'));
 app.use('/api/admin',       require('./routes/admin.routes'));
 
-// ─── Health check endpoint ────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
@@ -46,16 +41,13 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ─── 404 handler ─────────────────────────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.method} ${req.originalUrl} tidak ditemukan.` });
 });
 
-// ─── Global error handler ─────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error('[ERROR]', err);
 
-  // Error dari multer (upload file)
   if (err.code === 'LIMIT_FILE_SIZE') {
     return res.status(400).json({ success: false, message: 'Ukuran file terlalu besar. Maksimal 5MB.' });
   }
@@ -66,7 +58,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ─── Jalankan server ──────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log('');

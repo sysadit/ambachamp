@@ -14,37 +14,37 @@ const teamMembers = [
     name: "Sayed Muhammad Qadri",
     nim: "0110224190",
     role: "Scrum Master",
-    image: "https://images.unsplash.com/photo-1616325629936-99a9013c29c6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMGZlbWFsZSUyMGRlc2lnbmVyJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzgyMTM5MjkyfDA&ixlib=rb-4.1.0&q=80&w=1080",
-    github: "https://github.com/",
-    linkedin: "https://linkedin.com/",
-    instagram: "https://instagram.com/"
+    image: "/images/teams/sayyid.jpeg",
+    github: "https://github.com/Albouftaim",
+    linkedin: "https://www.linkedin.com/in/sayed-muhammad-qadri-5b4193294/",
+    instagram: "https://www.instagram.com/sayyid_albouftaim/"
   },
   {
     name: "Riza Alfira Nasution",
     nim: "0110224126",
     role: "Media & Creative",
-    image: "https://images.unsplash.com/photo-1634402153378-16bd852cd046?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMGFzaWFuJTIwbWFuJTIwc21pbGluZyUyMHBvcnRyYWl0JTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc4MjEzOTI5M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/images/teams/riza.jpeg",
     github: "https://github.com/",
-    linkedin: "https://linkedin.com/",
-    instagram: "https://instagram.com/"
+    linkedin: "https://www.linkedin.com/in/riiza-alfiraa-78b45233b/",
+    instagram: "https://www.instagram.com/riizanst?igsh=MWE4cG9lZHk4N3pxbQ=="
   },
   {
     name: "Muhamad Imadudin",
     nim: "0110224196",
     role: "Media & Creative",
-    image: "https://images.unsplash.com/photo-1573496800808-56566a492b63?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMGZlbWFsZSUyMHN0dWRlbnQlMjBnbGFzc2VzJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzgyMTM5MjkzfDA&ixlib=rb-4.1.0&q=80&w=1080",
-    github: "https://github.com/",
-    linkedin: "https://linkedin.com/",
-    instagram: "https://instagram.com/"
+    image: "/images/teams/ima.jpeg",
+    github: "https://github.com/Imadudin6060",
+    linkedin: "https://www.linkedin.com/in/muhamad-imadudin-73a93332b?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+    instagram: "https://www.instagram.com/ima21_4?igsh=MTgydGowYTJtcjAxaA=="
   },
   {
     name: "Adit Hermansyah",
     nim: "0110224092",
     role: "Designer & Developer",
     image: "images/teams/Adit.jpeg",
-    github: "https://github.com/",
-    linkedin: "https://linkedin.com/",
-    instagram: "https://instagram.com/"
+    github: "https://github.com/sysadit",
+    linkedin: "https://linkedin.com/Adit Hermansyah",
+    instagram: "https://instagram.com/_syahadit"
   },
   {
     name: "Muhamad Bilal Fatiha",
@@ -59,7 +59,7 @@ const teamMembers = [
     name: "Muhamad Aditia",
     nim: "0110224213",
     role: "Designer & Developer",
-    image: "https://images.unsplash.com/photo-1758600432264-b8d2a0fd7d83?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMG1hbiUyMGhlYWRzaG90JTIwc3R1ZGlvfGVufDF8fHx8MTc4MjEzOTMwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/images/teams/aditia.jpeg",
     github: "https://github.com/",
     linkedin: "https://linkedin.com/",
     instagram: "https://instagram.com/"
