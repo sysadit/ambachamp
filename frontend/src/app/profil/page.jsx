@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { authAPI } from '@/lib/api';
+import { authAPI, wishlistAPI } from '@/lib/api';
 import Navbar from '@/components/layout/Navbar';
+import Link from 'next/link';
 import {
   Camera, Plus, X, Loader2, TriangleAlert, CircleCheck,
-  UserCircle, AtSign, Phone, MessageCircle, Medal, Save
+  UserCircle, AtSign, Phone, MessageCircle, Medal, Save, Bookmark, Calendar
 } from 'lucide-react';
 
 export default function ProfilPage() {
@@ -18,6 +19,7 @@ export default function ProfilPage() {
     nama: '', email: '', phone: '', whatsapp: '', nim: '', jurusan: '', bio: '',
   });
   const [prestasi, setPrestasi] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
   const [foto, setFoto] = useState(null);
   const [preview, setPreview] = useState(null);
 
@@ -48,6 +50,13 @@ export default function ProfilPage() {
       })
       .catch(() => setErr('Gagal memuat profil.'))
       .finally(() => setLoading(false));
+
+    // ambil wishlist khusus mahasiswa
+    if (user.role === 'mahasiswa') {
+      wishlistAPI.getAll()
+        .then((r) => setWishlist(r.data.data || []))
+        .catch(() => setWishlist([]));
+    }
   }, [user]);
 
   const onField = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -214,6 +223,41 @@ export default function ProfilPage() {
               <button onClick={simpan} disabled={saving} className="btn-primary w-full py-3">
                 {saving ? <><Loader2 className="h-4 w-4 animate-spin" /> Menyimpan...</> : <><Save className="h-4 w-4" /> Simpan Perubahan</>}
               </button>
+
+              {/* Wishlist (khusus mahasiswa) */}
+              {user.role === 'mahasiswa' && (
+                <div className="card p-6">
+                  <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Bookmark className="h-4 w-4 text-brand-600" /> Wishlist Lomba
+                    <span className="text-xs text-gray-400 font-normal">({wishlist.length})</span>
+                  </h2>
+                  {wishlist.length === 0 ? (
+                    <div className="text-center py-6">
+                      <Bookmark className="h-10 w-10 text-gray-200 mx-auto mb-2" />
+                      <p className="text-sm text-gray-400 mb-3">Belum ada lomba yang disimpan.</p>
+                      <Link href="/lomba" className="text-sm text-brand-600 font-medium hover:text-brand-700">Cari lomba →</Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {wishlist.map((l) => (
+                        <Link key={l.id} href={`/lomba/${l.id}`}
+                          className="flex items-center justify-between gap-3 p-3 rounded-xl border border-gray-100 hover:border-brand-200 hover:bg-brand-50/40 transition">
+                          <div className="min-w-0">
+                            <p className="font-medium text-gray-800 text-sm truncate">{l.judul}</p>
+                            {l.deadline_pendaftaran && (
+                              <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+                                <Calendar className="h-3 w-3" />
+                                {new Date(l.deadline_pendaftaran).toLocaleDateString('id-ID')}
+                              </p>
+                            )}
+                          </div>
+                          <span className="badge-gray capitalize flex-shrink-0">{l.tingkat}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

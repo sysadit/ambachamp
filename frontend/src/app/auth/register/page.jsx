@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [loading,  setLoading]      = useState(false);
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ defaultValues: { role: 'mahasiswa' } });
   const role = watch('role');
+  const tipePenyelenggara = watch('tipe_penyelenggara');
 
   const onSubmit = async (data) => {
     setError(''); setLoading(true);
@@ -94,6 +95,24 @@ export default function RegisterPage() {
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">Jurusan</label>
                   <input type="text" placeholder="Teknik Informatika" className="input-base" {...register('jurusan')} />
                 </div>
+              </div>
+            )}
+
+            {role === 'penyelenggara' && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Tipe Penyelenggara</label>
+                  <select className="input-base" {...register('tipe_penyelenggara')}>
+                    <option value="individu">Individu</option>
+                    <option value="organisasi">Organisasi / Lembaga</option>
+                  </select>
+                </div>
+                {tipePenyelenggara === 'organisasi' && (
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nama Organisasi / Lembaga</label>
+                    <input type="text" placeholder="Nama lembaga penyelenggara" className="input-base" {...register('nama_organisasi')} />
+                  </div>
+                )}
               </div>
             )}
 

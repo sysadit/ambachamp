@@ -50,7 +50,7 @@ function FormBuatLowongan() {
 
     setSaving(true);
     try {
-      await teammateAPI.create({
+      await teammateAPI.createPost({
         lomba_id: Number(lombaId),
         judul,
         deskripsi: kontak ? `${deskripsi}\n\nKontak: ${kontak}` : deskripsi,

@@ -1,7 +1,7 @@
 // src/routes/teammate.routes.js
 const express = require('express');
 const router  = express.Router();
-const { getAllPosts, getPostById, createPost, closePost, applyToPost, updateApplication, getMyApplications } = require('../controllers/teammate.controller');
+const { getAllPosts, getPostById, createPost, closePost, applyToPost, updateApplication, getMyApplications, getGrupPenyelenggara, getMyPosts } = require('../controllers/teammate.controller');
 const { protect, authorize } = require('../middleware/auth');
 const { body } = require('express-validator');
 
@@ -15,6 +15,8 @@ const validatePost = [
 // Public
 router.get('/', getAllPosts);
 router.get('/my-applications', protect, authorize('mahasiswa'), getMyApplications);
+router.get('/my-posts', protect, authorize('mahasiswa'), getMyPosts);
+router.get('/penyelenggara/grup', protect, authorize('penyelenggara'), getGrupPenyelenggara);
 router.get('/:id', protect, getPostById); // protected supaya bisa lihat applicants
 
 // Mahasiswa buat post dan apply

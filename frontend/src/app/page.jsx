@@ -23,10 +23,10 @@ const STATS = [
 ];
 
 const STEPS = [
-  { icon: Search,  label: 'Find',    desc: 'Temukan ribuan event & kompetisi sesuai bidang dan keahlian Anda.' },
-  { icon: Users,   label: 'Connect', desc: 'Jadikan teman menginspirasi dan rekan-tim yang paling cocok dengan kompetisi Anda.' },
-  { icon: Target,  label: 'Compete', desc: 'Ikuti kontes online atau offline yang sempurna untuk menempa dan mengembangkan diri.' },
-  { icon: Medal,   label: 'Win',     desc: 'Dari pengalaman, tambah skills, dan isi portofolio profesional Anda.' },
+  { icon: Search,  label: 'Temukan',    desc: 'Temukan ribuan event & kompetisi sesuai bidang dan keahlian Anda.' },
+  { icon: Users,   label: 'Terhubung', desc: 'Jadikan teman menginspirasi dan rekan-tim yang paling cocok dengan kompetisi Anda.' },
+  { icon: Target,  label: 'Berkompetisi', desc: 'Ikuti kontes online atau offline yang sempurna untuk menempa dan mengembangkan diri.' },
+  { icon: Medal,   label: 'Menang',     desc: 'Dari pengalaman, tambah skills, dan isi portofolio profesional Anda.' },
 ];
 
 const FEATURED = [

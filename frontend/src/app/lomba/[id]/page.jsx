@@ -169,7 +169,7 @@ export default function LombaDetailPage() {
               <div className="pt-2 space-y-2">
                 {lomba.link_pendaftaran && !isExpired && (
                   <a href={lomba.link_pendaftaran} target="_blank" rel="noopener noreferrer"
-                    className="btn-accent w-full justify-center">
+                    className="w-full justify-center inline-flex items-center gap-2 bg-blue-600 text-white font-semibold px-5 py-3 rounded-xl hover:bg-blue-700 transition shadow-sm">
                     Daftar Sekarang <ExternalLink className="h-4 w-4" />
                   </a>
                 )}
