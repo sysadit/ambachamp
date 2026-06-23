@@ -52,11 +52,15 @@ const getPostById = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Post tidak ditemukan.' });
     }
 
-    // Ambil juga list pelamar (hanya tampil ke pembuat post)
+    // Ambil juga list pelamar (tampil ke pembuat post, penyelenggara lomba, atau admin)
     let applications = [];
-    if (req.user && req.user.id === rows[0].pembuat_id) {
+    const [lombaData] = await db.query('SELECT penyelenggara_id FROM lomba WHERE id = ?', [rows[0].lomba_id]);
+    const isLombaOrganizer = req.user && req.user.role === 'penyelenggara' && lombaData.length > 0 && lombaData[0].penyelenggara_id === req.user.id;
+    const isAdmin = req.user && req.user.role === 'admin';
+
+    if (req.user && (req.user.id === rows[0].pembuat_id || isLombaOrganizer || isAdmin)) {
       const [apps] = await db.query(
-        `SELECT ta.*, u.nama AS nama_pelamar, u.jurusan, u.nim
+        `SELECT ta.*, u.nama AS nama_pelamar, u.jurusan, u.nim, u.email, u.phone, u.whatsapp
          FROM teammate_applications ta
          JOIN users u ON ta.pelamar_id = u.id
          WHERE ta.post_id = ?`,
@@ -81,12 +85,24 @@ const createPost = async (req, res) => {
       return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { lomba_id, judul, deskripsi, posisi_dibutuhkan, jumlah_anggota_max = 3 } = req.body;
+    const { lomba_id, judul, deskripsi, posisi_dibutuhkan, jumlah_anggota_max = 3, link_telegram } = req.body;
 
-    // Cek lomba ada dan masih open
-    const [lomba] = await db.query('SELECT id FROM lomba WHERE id = ? AND status = "verified"', [lomba_id]);
+    // Cek lomba ada
+    const [lomba] = await db.query('SELECT id, penyelenggara_id, status FROM lomba WHERE id = ?', [lomba_id]);
     if (lomba.length === 0) {
       return res.status(404).json({ success: false, message: 'Lomba tidak ditemukan.' });
+    }
+
+    if (req.user.role === 'mahasiswa') {
+      if (lomba[0].status !== 'verified') {
+        return res.status(403).json({ success: false, message: 'Lomba belum diverifikasi oleh admin.' });
+      }
+    } else if (req.user.role === 'penyelenggara') {
+      if (lomba[0].penyelenggara_id !== req.user.id) {
+        return res.status(403).json({ success: false, message: 'Lomba ini bukan milik Anda.' });
+      }
+    } else if (req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Anda tidak memiliki akses.' });
     }
 
     // posisi_dibutuhkan harus string JSON
@@ -95,8 +111,8 @@ const createPost = async (req, res) => {
       : JSON.stringify(posisi_dibutuhkan);
 
     const [result] = await db.query(
-      'INSERT INTO teammate_posts (lomba_id, pembuat_id, judul, deskripsi, posisi_dibutuhkan, jumlah_anggota_max) VALUES (?, ?, ?, ?, ?, ?)',
-      [lomba_id, req.user.id, judul, deskripsi, posisiJSON, jumlah_anggota_max]
+      'INSERT INTO teammate_posts (lomba_id, pembuat_id, judul, deskripsi, posisi_dibutuhkan, jumlah_anggota_max, link_telegram) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [lomba_id, req.user.id, judul, deskripsi, posisiJSON, jumlah_anggota_max, link_telegram || null]
     );
 
     res.status(201).json({
@@ -177,21 +193,16 @@ const applyToPost = async (req, res) => {
 // Pembuat post terima / tolak lamaran
 const updateApplication = async (req, res) => {
   try {
-    const { status, link_telegram } = req.body; // 'diterima' atau 'ditolak'
+    const { status } = req.body; // 'diterima' atau 'ditolak'
     const { appId } = req.params;
 
     if (!['diterima', 'ditolak'].includes(status)) {
       return res.status(400).json({ success: false, message: 'Status tidak valid.' });
     }
 
-    // kalau diterima, link grup telegram wajib diisi
-    if (status === 'diterima' && (!link_telegram || !link_telegram.trim())) {
-      return res.status(400).json({ success: false, message: 'Link grup Telegram wajib diisi saat menerima pelamar.' });
-    }
-
     // Ambil detail lamaran
     const [apps] = await db.query(
-      `SELECT ta.*, tp.pembuat_id, tp.judul AS judul_post
+      `SELECT ta.*, tp.pembuat_id, tp.judul AS judul_post, tp.lomba_id
        FROM teammate_applications ta
        JOIN teammate_posts tp ON ta.post_id = tp.id
        WHERE ta.id = ?`,
@@ -202,15 +213,17 @@ const updateApplication = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Lamaran tidak ditemukan.' });
     }
 
-    if (apps[0].pembuat_id !== req.user.id) {
-      return res.status(403).json({ success: false, message: 'Hanya pembuat post yang bisa update status lamaran.' });
+    // Authorization
+    const [lomba] = await db.query('SELECT penyelenggara_id FROM lomba WHERE id = ?', [apps[0].lomba_id]);
+    const isOwner = apps[0].pembuat_id === req.user.id;
+    const isOrganizer = req.user.role === 'penyelenggara' && lomba.length > 0 && lomba[0].penyelenggara_id === req.user.id;
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isOrganizer && !isAdmin) {
+      return res.status(403).json({ success: false, message: 'Hanya pembuat post atau penyelenggara lomba yang bisa update status lamaran.' });
     }
 
-    if (status === 'diterima') {
-      await db.query('UPDATE teammate_applications SET status = ?, link_telegram = ? WHERE id = ?', [status, link_telegram.trim(), appId]);
-    } else {
-      await db.query('UPDATE teammate_applications SET status = ? WHERE id = ?', [status, appId]);
-    }
+    await db.query('UPDATE teammate_applications SET status = ? WHERE id = ?', [status, appId]);
 
     // Notifikasi ke pelamar
     const pesan = status === 'diterima'
@@ -238,7 +251,7 @@ const getMyApplications = async (req, res) => {
               tp.judul AS judul_post,
               l.judul AS judul_lomba,
               pembuat.nama AS nama_pembuat,
-              CASE WHEN ta.status = 'diterima' THEN ta.link_telegram ELSE NULL END AS link_telegram
+              CASE WHEN ta.status = 'diterima' THEN tp.link_telegram ELSE NULL END AS link_telegram
        FROM teammate_applications ta
        JOIN teammate_posts tp ON ta.post_id = tp.id
        JOIN lomba l           ON tp.lomba_id = l.id
@@ -259,8 +272,8 @@ const getMyApplications = async (req, res) => {
 const getGrupPenyelenggara = async (req, res) => {
   try {
     const [rows] = await db.query(
-      `SELECT tp.id, tp.judul, tp.deskripsi, tp.jumlah_anggota_max, tp.status, tp.created_at,
-              l.judul AS judul_lomba,
+      `SELECT tp.id, tp.judul, tp.deskripsi, tp.posisi_dibutuhkan, tp.jumlah_anggota_max, tp.status, tp.created_at, tp.lomba_id, tp.link_telegram,
+              l.judul AS judul_lomba, l.deskripsi AS deskripsi_lomba, l.kategori AS kategori_lomba,
               pembuat.nama AS nama_pembuat,
               (SELECT COUNT(*) FROM teammate_applications ta
                 WHERE ta.post_id = tp.id AND ta.status = 'diterima') AS jumlah_anggota
@@ -282,7 +295,7 @@ const getGrupPenyelenggara = async (req, res) => {
 const getMyPosts = async (req, res) => {
   try {
     const [rows] = await db.query(
-      `SELECT tp.*, l.judul AS judul_lomba
+      `SELECT tp.*, l.judul AS judul_lomba, l.deskripsi AS deskripsi_lomba
        FROM teammate_posts tp
        JOIN lomba l ON tp.lomba_id = l.id
        WHERE tp.pembuat_id = ?
@@ -296,4 +309,100 @@ const getMyPosts = async (req, res) => {
   }
 };
 
-module.exports = { getAllPosts, getPostById, createPost, closePost, applyToPost, updateApplication, getMyApplications, getGrupPenyelenggara, getMyPosts };
+// ─── PUT /api/teammate/:id ───────────────────────────────────────────────────
+// Mengupdate data tim (oleh pembuat tim atau penyelenggara lomba)
+const updatePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { judul, deskripsi, posisi_dibutuhkan, jumlah_anggota_max, status, link_telegram } = req.body;
+
+    const [posts] = await db.query(
+      `SELECT tp.*, l.penyelenggara_id 
+       FROM teammate_posts tp
+       JOIN lomba l ON tp.lomba_id = l.id
+       WHERE tp.id = ?`,
+      [id]
+    );
+
+    if (posts.length === 0) {
+      return res.status(404).json({ success: false, message: 'Tim tidak ditemukan.' });
+    }
+
+    const post = posts[0];
+
+    const isOwner = post.pembuat_id === req.user.id;
+    const isOrganizer = req.user.role === 'penyelenggara' && post.penyelenggara_id === req.user.id;
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isOrganizer && !isAdmin) {
+      return res.status(403).json({ success: false, message: 'Anda tidak memiliki akses untuk mengubah tim ini.' });
+    }
+
+    const posisiJSON = typeof posisi_dibutuhkan === 'string'
+      ? posisi_dibutuhkan
+      : JSON.stringify(posisi_dibutuhkan);
+
+    await db.query(
+      `UPDATE teammate_posts 
+       SET judul = ?, deskripsi = ?, posisi_dibutuhkan = ?, jumlah_anggota_max = ?, status = ?, link_telegram = ?
+       WHERE id = ?`,
+      [judul, deskripsi, posisiJSON, Number(jumlah_anggota_max), status, link_telegram || null, id]
+    );
+
+    res.json({ success: true, message: 'Tim berhasil diperbarui.' });
+  } catch (err) {
+    console.error('[updatePost]', err);
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan server.' });
+  }
+};
+
+// ─── DELETE /api/teammate/:id ────────────────────────────────────────────────
+// Menghapus data tim (oleh pembuat tim atau penyelenggara lomba)
+const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const [posts] = await db.query(
+      `SELECT tp.*, l.penyelenggara_id 
+       FROM teammate_posts tp
+       JOIN lomba l ON tp.lomba_id = l.id
+       WHERE tp.id = ?`,
+      [id]
+    );
+
+    if (posts.length === 0) {
+      return res.status(404).json({ success: false, message: 'Tim tidak ditemukan.' });
+    }
+
+    const post = posts[0];
+
+    const isOwner = post.pembuat_id === req.user.id;
+    const isOrganizer = req.user.role === 'penyelenggara' && post.penyelenggara_id === req.user.id;
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isOrganizer && !isAdmin) {
+      return res.status(403).json({ success: false, message: 'Anda tidak memiliki akses untuk menghapus tim ini.' });
+    }
+
+    await db.query('DELETE FROM teammate_posts WHERE id = ?', [id]);
+
+    res.json({ success: true, message: 'Tim berhasil dihapus.' });
+  } catch (err) {
+    console.error('[deletePost]', err);
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan server.' });
+  }
+};
+
+module.exports = {
+  getAllPosts,
+  getPostById,
+  createPost,
+  closePost,
+  applyToPost,
+  updateApplication,
+  getMyApplications,
+  getGrupPenyelenggara,
+  getMyPosts,
+  updatePost,
+  deletePost
+};

@@ -7,12 +7,13 @@ import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { lombaAPI, wishlistAPI, teammateAPI } from '@/lib/api';
 import Link from 'next/link';
-import { Search, Bookmark, Users, Loader2, ArrowRight, Bell } from 'lucide-react';
+import { Search, Bookmark, Users, Loader2, ArrowRight, Bell, MessageCircle } from 'lucide-react';
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [stat, setStat] = useState({ lomba: 0, wishlist: 0, team: 0 });
+  const [acceptedTeams, setAcceptedTeams] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,12 +27,16 @@ export default function DashboardPage() {
       lombaAPI.getAll().catch(() => ({ data: { data: [] } })),
       wishlistAPI.getAll().catch(() => ({ data: { data: [] } })),
       teammateAPI.getMyPosts().catch(() => ({ data: { data: [] } })),
-    ]).then(([lombaRes, wishRes, postRes]) => {
+      teammateAPI.getMyApplications().catch(() => ({ data: { data: [] } })),
+    ]).then(([lombaRes, wishRes, postRes, appRes]) => {
       setStat({
         lomba:    (lombaRes.data.data || []).length,
         wishlist: (wishRes.data.data || []).length,
         team:     (postRes.data.data || []).length,
       });
+      const apps = appRes.data.data || [];
+      const accepted = apps.filter(a => a.status === 'diterima');
+      setAcceptedTeams(accepted);
     }).finally(() => setLoading(false));
   }, [user]);
 
@@ -40,7 +45,7 @@ export default function DashboardPage() {
   const cards = [
     { label: 'Total Lomba Tersedia', value: stat.lomba,    icon: Search,   color: 'bg-blue-100 text-blue-600',   href: '/lomba' },
     { label: 'Lomba di Wishlist',    value: stat.wishlist, icon: Bookmark, color: 'bg-amber-100 text-amber-600', href: '/wishlist' },
-    { label: 'Tim yang Dibuat',      value: stat.team,     icon: Users,    color: 'bg-brand-100 text-brand-600', href: '/explore' },
+    { label: 'Tim yang Dibuat',      value: stat.team,     icon: Users,    color: 'bg-brand-100 text-brand-600', href: '/teammate/list' },
   ];
 
   return (
@@ -85,6 +90,44 @@ export default function DashboardPage() {
               </div>
               <Bell className="h-5 w-5 text-slate-300 group-hover:text-brand-600" />
             </Link>
+          </div>
+
+          {/* Tim List yang Dilamar (Diterima) */}
+          <div className="mt-8">
+            <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              Tim List yang Dilamar (Diterima)
+            </h2>
+            {acceptedTeams.length === 0 ? (
+              <div className="card p-6 text-center text-sm text-slate-400 bg-white border border-slate-100">
+                Kamu belum bergabung dengan tim mana pun. Cari tim atau lamar lowongan lomba.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {acceptedTeams.map(t => (
+                  <div key={t.id} className="card p-5 border border-emerald-100 bg-white shadow-sm hover:shadow-md transition">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-semibold text-slate-800 text-sm truncate">{t.judul_post}</h3>
+                        <p className="text-xs text-slate-400 mt-0.5 truncate">Lomba: <span className="font-medium text-slate-600">{t.judul_lomba}</span></p>
+                      </div>
+                      <span className="badge-green text-xs font-semibold px-2.5 py-1 rounded-lg shrink-0">Diterima</span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-50">
+                      <span className="text-xs text-slate-500">
+                        Posisi: <span className="font-semibold text-slate-700">{t.posisi}</span> · Oleh: {t.nama_pembuat}
+                      </span>
+                      {t.link_telegram && (
+                        <a href={t.link_telegram} target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl shadow-sm transition shrink-0">
+                          <MessageCircle className="h-3.5 w-3.5" /> Join Telegram
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </>
       )}

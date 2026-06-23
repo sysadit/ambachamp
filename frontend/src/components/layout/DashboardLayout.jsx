@@ -12,10 +12,11 @@ import {
 // Sidebar links per role
 const SIDEBAR = {
   mahasiswa: [
-    { href: '/dashboard',  icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/lomba',      icon: Search,          label: 'Mencari Lomba' },
-    { href: '/wishlist',   icon: Bookmark,        label: 'Wishlist' },
-    { href: '/notifikasi', icon: Bell,            label: 'Notifikasi' },
+    { href: '/dashboard',     icon: LayoutDashboard, label: 'Dashboard' },
+    { href: '/lomba',         icon: Search,          label: 'Mencari Lomba' },
+    { href: '/teammate/list', icon: Users,           label: 'Tim List' },
+    { href: '/wishlist',      icon: Bookmark,        label: 'Wishlist' },
+    { href: '/notifikasi',    icon: Bell,            label: 'Notifikasi' },
   ],
   penyelenggara: [
     { href: '/penyelenggara/dashboard',    icon: LayoutDashboard, label: 'Dashboard' },
