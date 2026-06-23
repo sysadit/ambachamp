@@ -1,15 +1,104 @@
+"use client";
+
+import { useState, useEffect, useCallback } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { Search, Filter, Bookmark, ShieldCheck, MapPin, Tag } from "lucide-react";
+import LombaCard from '@/components/lomba/LombaCard';
+import { lombaAPI, wishlistAPI } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+import { Search, Filter, Loader2, Trophy } from "lucide-react";
 
-const mockCompetitions = [
-  { id: 1, title: "Nasional Hackathon 2026", org: "Kementerian Kominfo", category: "Teknologi", level: "Nasional", fee: "Gratis", date: "24 Okt 2026", verified: true, image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=800" },
-  { id: 2, title: "Business Plan Competition UGM", org: "BEM FEB UGM", category: "Bisnis", level: "Mahasiswa", fee: "Rp 50.000", date: "12 Nov 2026", verified: true, image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800" },
-  { id: 3, title: "UI/UX Design UI Connect", org: "Fasilkom UI", category: "Desain", level: "Nasional", fee: "Rp 35.000", date: "5 Des 2026", verified: true, image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=800" },
-  { id: 4, title: "Debat Bahasa Inggris Internasional", org: "English Society", category: "Bahasa", level: "Internasional", fee: "Rp 150.000", date: "20 Des 2026", verified: false, image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=800" },
+const KATEGORI_OPTS = [
+  { value: 'Semua', label: 'Semua Kategori' },
+  { value: 'teknologi_digital', label: 'Teknologi & Digital' },
+  { value: 'sains_riset', label: 'Sains & Riset' },
+  { value: 'olahraga', label: 'Olahraga' },
+  { value: 'seni_kreatif', label: 'Seni & Kreatif' },
+];
+
+const TINGKAT_OPTS = [
+  { value: 'Semua', label: 'Semua Tingkat' },
+  { value: 'internasional', label: 'Internasional' },
+  { value: 'nasional', label: 'Nasional' },
+  { value: 'kampus', label: 'Mahasiswa/Kampus' },
 ];
 
 export default function ExplorePage() {
+  const { user } = useAuth();
+  const [lombaList, setLombaList] = useState([]);
+  const [wishlistIds, setWishlistIds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchVal, setSearchVal] = useState('');
+  const [keyword, setKeyword] = useState('');
+  const [activeKategori, setActiveKategori] = useState('Semua');
+  const [activeTingkat, setActiveTingkat] = useState('Semua');
+  const [activeBiaya, setActiveBiaya] = useState('Semua');
+
+  // Fetch wishlist untuk mengetahui status bookmark masing-masing lomba
+  const fetchWishlist = useCallback(async () => {
+    if (!user || user.role !== 'mahasiswa') {
+      setWishlistIds([]);
+      return;
+    }
+    try {
+      const res = await wishlistAPI.getAll();
+      const list = res.data?.data || [];
+      setWishlistIds(list.map(w => w.id));
+    } catch (err) {
+      console.error('Error fetching wishlist:', err);
+    }
+  }, [user]);
+
+  // Fetch lomba dari backend dengan filter
+  const fetchLomba = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = {
+        keyword: keyword || undefined,
+        kategori: activeKategori !== 'Semua' ? activeKategori : undefined,
+        tingkat: activeTingkat !== 'Semua' ? activeTingkat : undefined,
+        gratis: activeBiaya === 'Gratis' ? '1' : undefined,
+        limit: 100 // Load data yang cukup banyak untuk eksplorasi
+      };
+
+      const res = await lombaAPI.getAll(params);
+      let data = res.data?.data || [];
+
+      // Filter client-side untuk berbayar karena backend tidak memiliki parameter berbayar secara bawaan
+      if (activeBiaya === 'Berbayar') {
+        data = data.filter(l => l.biaya_pendaftaran > 0);
+      }
+
+      setLombaList(data);
+    } catch (err) {
+      console.error('Error fetching lomba:', err);
+      setLombaList([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [keyword, activeKategori, activeTingkat, activeBiaya]);
+
+  useEffect(() => {
+    fetchLomba();
+  }, [fetchLomba]);
+
+  useEffect(() => {
+    fetchWishlist();
+  }, [fetchWishlist]);
+
+  const handleSearchSubmit = (e) => {
+    e?.preventDefault();
+    setKeyword(searchVal);
+  };
+
+  const resetFilters = () => {
+    setActiveKategori('Semua');
+    setActiveTingkat('Semua');
+    setActiveBiaya('Semua');
+    setSearchVal('');
+    setKeyword('');
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
       <Navbar />
@@ -24,9 +113,16 @@ export default function ExplorePage() {
           {/* Sidebar Filters */}
           <aside className="w-full lg:w-72 flex-shrink-0 space-y-6">
             <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm sticky top-24">
-              <div className="flex items-center gap-2 mb-6 text-slate-900">
-                <Filter className="h-5 w-5" />
-                <h2 className="font-bold text-lg">Filter Pencarian</h2>
+              <div className="flex items-center justify-between mb-6 text-slate-900">
+                <div className="flex items-center gap-2">
+                  <Filter className="h-5 w-5 text-indigo-600" />
+                  <h2 className="font-bold text-lg">Filter Pencarian</h2>
+                </div>
+                {(activeKategori !== 'Semua' || activeTingkat !== 'Semua' || activeBiaya !== 'Semua' || keyword) && (
+                  <button onClick={resetFilters} className="text-xs text-rose-500 hover:text-rose-700 font-semibold transition-colors">
+                    Reset
+                  </button>
+                )}
               </div>
 
               <div className="space-y-6">
@@ -34,10 +130,17 @@ export default function ExplorePage() {
                 <div>
                   <label className="block text-sm font-bold text-slate-800 mb-3">Kategori</label>
                   <div className="space-y-3">
-                    {["Semua", "Teknologi", "Bisnis", "Desain", "Sains", "Bahasa"].map(cat => (
-                      <label key={cat} className="flex items-center gap-3 cursor-pointer group">
-                        <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 transition-colors" defaultChecked={cat === "Semua"} />
-                        <span className="text-slate-600 font-medium group-hover:text-slate-900 transition-colors">{cat}</span>
+                    {KATEGORI_OPTS.map(cat => (
+                      <label key={cat.value} className="flex items-center gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={activeKategori === cat.value}
+                          onChange={() => setActiveKategori(cat.value)}
+                          className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 transition-colors cursor-pointer accent-indigo-600"
+                        />
+                        <span className={`font-medium transition-colors ${activeKategori === cat.value ? 'text-indigo-600 font-bold' : 'text-slate-600 group-hover:text-slate-900'}`}>
+                          {cat.label}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -47,10 +150,17 @@ export default function ExplorePage() {
                 <div className="pt-6 border-t border-slate-100">
                   <label className="block text-sm font-bold text-slate-800 mb-3">Tingkat Wilayah</label>
                   <div className="space-y-3">
-                    {["Internasional", "Nasional", "Provinsi", "Mahasiswa/Universitas"].map(level => (
-                      <label key={level} className="flex items-center gap-3 cursor-pointer group">
-                        <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 transition-colors" />
-                        <span className="text-slate-600 font-medium group-hover:text-slate-900 transition-colors">{level}</span>
+                    {TINGKAT_OPTS.map(level => (
+                      <label key={level.value} className="flex items-center gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={activeTingkat === level.value}
+                          onChange={() => setActiveTingkat(level.value)}
+                          className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 transition-colors cursor-pointer accent-indigo-600"
+                        />
+                        <span className={`font-medium transition-colors ${activeTingkat === level.value ? 'text-indigo-600 font-bold' : 'text-slate-600 group-hover:text-slate-900'}`}>
+                          {level.label}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -59,10 +169,14 @@ export default function ExplorePage() {
                 {/* Filter Biaya */}
                 <div className="pt-6 border-t border-slate-100">
                   <label className="block text-sm font-bold text-slate-800 mb-3">Biaya Pendaftaran</label>
-                  <select className="w-full rounded-xl border border-slate-300 bg-slate-50 py-2.5 px-3 text-slate-700 font-medium shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white transition-colors cursor-pointer outline-none">
-                    <option>Semua Biaya</option>
-                    <option>Gratis</option>
-                    <option>Berbayar</option>
+                  <select
+                    value={activeBiaya}
+                    onChange={e => setActiveBiaya(e.target.value)}
+                    className="w-full rounded-xl border border-slate-300 bg-slate-50 py-2.5 px-3 text-slate-700 font-medium shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white transition-colors cursor-pointer outline-none"
+                  >
+                    <option value="Semua">Semua Biaya</option>
+                    <option value="Gratis">Gratis</option>
+                    <option value="Berbayar">Berbayar</option>
                   </select>
                 </div>
               </div>
@@ -71,65 +185,60 @@ export default function ExplorePage() {
 
           {/* Main Content */}
           <div className="flex-1 space-y-8">
-            
             {/* Search Bar */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <input 
-                  type="text" 
-                  placeholder="Cari nama lomba atau penyelenggara..." 
+                <input
+                  type="text"
+                  placeholder="Cari nama lomba atau penyelenggara..."
+                  value={searchVal}
+                  onChange={e => setSearchVal(e.target.value)}
                   className="w-full pl-14 pr-4 py-4 rounded-2xl border border-slate-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-slate-900 font-medium bg-white transition-colors outline-none"
                 />
               </div>
-              <button className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-md active:scale-95 w-full sm:w-auto">
+              <button
+                type="submit"
+                className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-md active:scale-95 w-full sm:w-auto"
+              >
                 Cari
               </button>
-            </div>
+            </form>
 
             {/* Grid Lomba */}
-            <div className="grid md:grid-cols-2 gap-6">
-              {mockCompetitions.map(comp => (
-                <div key={comp.id} className="bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
-                  <div className="h-52 overflow-hidden relative">
-                    <img src={comp.image} alt={comp.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute top-4 left-4 flex gap-2">
-                      <span className="bg-white/95 backdrop-blur text-indigo-700 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm">
-                        {comp.category}
-                      </span>
-                      {comp.verified && (
-                        <span className="bg-emerald-500/95 backdrop-blur text-white px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 shadow-sm">
-                          <ShieldCheck className="h-3.5 w-3.5" /> Verified
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3 className="font-bold text-xl text-slate-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">{comp.title}</h3>
-                    <p className="text-slate-500 text-sm font-medium mb-5">{comp.org}</p>
-                    
-                    <div className="space-y-2.5 mb-6 flex-1">
-                      <div className="flex items-center gap-2.5 text-sm font-medium text-slate-600 bg-slate-50 w-fit px-3 py-1.5 rounded-lg">
-                        <MapPin className="h-4 w-4 text-indigo-500" /> {comp.level}
-                      </div>
-                      <div className="flex items-center gap-2.5 text-sm font-medium text-slate-600 bg-slate-50 w-fit px-3 py-1.5 rounded-lg">
-                        <Tag className="h-4 w-4 text-indigo-500" /> {comp.fee}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between mt-auto pt-5 border-t border-slate-100">
-                      <div className="text-sm font-bold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-lg">
-                        Batas: {comp.date}
-                      </div>
-                      <button className="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors relative" title="Simpan Lomba">
-                        <Bookmark className="h-5 w-5" />
-                      </button>
-                    </div>
-                  </div>
+            {loading ? (
+              <div className="flex justify-center items-center py-24 bg-white rounded-[2rem] border border-slate-200 shadow-sm">
+                <Loader2 className="h-10 w-10 animate-spin text-indigo-600" />
+              </div>
+            ) : lombaList.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-24 bg-white rounded-[2rem] border border-slate-200 shadow-sm px-6 text-center">
+                <Trophy className="h-16 w-16 text-slate-200 mb-4" />
+                <h3 className="text-xl font-bold text-slate-800">Lomba tidak ditemukan</h3>
+                <p className="text-slate-500 mt-2 max-w-sm">
+                  Tidak ada kompetisi aktif yang sesuai dengan filter atau kata kunci pencarian Anda. Coba ubah pencarian Anda.
+                </p>
+                <button
+                  onClick={resetFilters}
+                  className="mt-6 px-5 py-2.5 bg-indigo-50 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-100 transition-colors"
+                >
+                  Reset Filter
+                </button>
+              </div>
+            ) : (
+              <div>
+                <p className="text-sm text-slate-500 mb-4 font-medium">{lombaList.length} lomba ditemukan</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {lombaList.map(lomba => (
+                    <LombaCard
+                      key={lomba.id}
+                      lomba={lomba}
+                      inWishlist={wishlistIds.includes(lomba.id)}
+                      onWishlistChange={fetchWishlist}
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
-            
+              </div>
+            )}
           </div>
         </div>
       </main>
