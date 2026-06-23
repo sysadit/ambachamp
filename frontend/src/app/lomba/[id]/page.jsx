@@ -28,7 +28,25 @@ export default function LombaDetailPage() {
       .then(res => setLomba(res.data.data))
       .catch(() => router.push('/lomba'))
       .finally(() => setLoading(false));
-  }, [id]);
+
+    if (user && user.role === 'mahasiswa') {
+      wishlistAPI.getAll()
+        .then(res => {
+          const list = res.data?.data || [];
+          const isSaved = list.some(w => w.id === Number(id));
+          setSaved(isSaved);
+        })
+        .catch(() => {});
+    }
+  }, [id, user]);
+
+  const getExternalLink = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    return `https://${url}`;
+  };
 
   const toggleWishlist = async () => {
     setSaving(true);
@@ -167,10 +185,14 @@ export default function LombaDetailPage() {
                 </div>
               )}
               <div className="pt-2 space-y-2">
-                {lomba.link_pendaftaran && !isExpired && (
-                  <a href={lomba.link_pendaftaran} target="_blank" rel="noopener noreferrer"
-                    className="w-full justify-center inline-flex items-center gap-2 bg-blue-600 text-white font-semibold px-5 py-3 rounded-xl hover:bg-blue-700 transition shadow-sm">
-                    Daftar Sekarang <ExternalLink className="h-4 w-4" />
+                {lomba.link_pendaftaran && (
+                  <a href={getExternalLink(lomba.link_pendaftaran)} target="_blank" rel="noopener noreferrer"
+                    className={`w-full justify-center inline-flex items-center gap-2 font-semibold px-5 py-3 rounded-xl transition shadow-sm ${
+                      isExpired 
+                        ? 'bg-slate-200 text-slate-500 cursor-not-allowed pointer-events-none' 
+                        : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                    }`}>
+                    {isExpired ? 'Pendaftaran Ditutup' : 'Daftar Sekarang'} <ExternalLink className="h-4 w-4" />
                   </a>
                 )}
 

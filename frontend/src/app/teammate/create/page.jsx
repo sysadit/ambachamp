@@ -19,6 +19,7 @@ function FormBuatLowongan() {
   const [deskripsi, setDeskripsi] = useState('');
   const [maxAnggota, setMaxAnggota] = useState(3);
   const [kontak, setKontak] = useState('');
+  const [linkTelegram, setLinkTelegram] = useState('');
   const [posisi, setPosisi] = useState(['']);
 
   const [err, setErr] = useState('');
@@ -46,6 +47,7 @@ function FormBuatLowongan() {
     const posBersih = posisi.map((p) => p.trim()).filter(Boolean);
     if (!judul.trim())     return setErr('Judul lowongan wajib diisi.');
     if (!deskripsi.trim()) return setErr('Deskripsi wajib diisi.');
+    if (!linkTelegram.trim()) return setErr('Link grup Telegram wajib diisi.');
     if (posBersih.length === 0) return setErr('Isi minimal satu posisi.');
 
     setSaving(true);
@@ -56,6 +58,7 @@ function FormBuatLowongan() {
         deskripsi: kontak ? `${deskripsi}\n\nKontak: ${kontak}` : deskripsi,
         jumlah_anggota_max: Number(maxAnggota),
         posisi_dibutuhkan: JSON.stringify(posBersih),
+        link_telegram: linkTelegram,
       });
       setDone(true);
       setTimeout(() => router.push(`/teammate?lomba_id=${lombaId}`), 1300);
@@ -127,9 +130,9 @@ function FormBuatLowongan() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Judul Lowongan</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nama Tim / Judul Lowongan</label>
                 <input value={judul} onChange={(e) => setJudul(e.target.value)}
-                  placeholder="Misal: Butuh 2 orang buat tim hackathon" className="input-base" />
+                  placeholder="Misal: Tim Falcon / Butuh 2 developer frontend" className="input-base" />
               </div>
 
               <div>
@@ -157,6 +160,12 @@ function FormBuatLowongan() {
                   className="mt-2 inline-flex items-center gap-1 text-sm text-brand-600 font-medium hover:text-brand-700">
                   <Plus className="h-4 w-4" /> Tambah posisi
                 </button>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Link Telegram Grup (Wajib)</label>
+                <input value={linkTelegram} onChange={(e) => setLinkTelegram(e.target.value)}
+                  placeholder="https://t.me/joinchat/... atau https://t.me/..." className="input-base" />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
