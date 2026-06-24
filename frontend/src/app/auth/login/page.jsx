@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/context/AuthContext';
-import { Trophy, Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   // --- LOGIKA LAMA YANG DIPERTAHANKAN ---
@@ -34,10 +34,8 @@ export default function LoginPage() {
           
           {/* Logo */}
           <div className="flex justify-center mb-8">
-            <Link href="/" className="flex items-center gap-2 text-indigo-600">
-              <div className="h-12 w-12 bg-indigo-100 rounded-2xl flex items-center justify-center">
-                <Trophy className="h-7 w-7" />
-              </div>
+            <Link href="/" className="flex items-center gap-2">
+              <img alt="AMBAChamp Logo" className="h-12 w-auto object-contain" src="/images/logo-ambachamp.png" />
             </Link>
           </div>
           

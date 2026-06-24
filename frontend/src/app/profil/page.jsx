@@ -42,7 +42,8 @@ export default function ProfilPage() {
           nama: d.nama || '', email: d.email || '', phone: d.phone || '',
           whatsapp: d.whatsapp || '', nim: d.nim || '', jurusan: d.jurusan || '', bio: d.bio || '',
         });
-        if (d.foto_profil) setPreview(`${process.env.NEXT_PUBLIC_UPLOAD_URL}/posters/${d.foto_profil}`);
+        const uploadUrl = process.env.NEXT_PUBLIC_UPLOAD_URL || 'http://localhost:5000/uploads';
+        if (d.foto_profil) setPreview(`${uploadUrl}/posters/${d.foto_profil}`);
         try {
           const p = d.prestasi ? JSON.parse(d.prestasi) : [];
           setPrestasi(Array.isArray(p) ? p : []);
@@ -102,107 +103,164 @@ export default function ProfilPage() {
   if (authLoading || !user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col font-sans">
       <Navbar />
-      <div className="container-main py-8 flex-1">
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Profil Saya</h1>
-          <p className="text-sm text-gray-500 mb-6">Atur data diri dan rekam jejak prestasimu.</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-10 flex-grow">
+        <div className="mb-8">
+          <h1 className="font-display text-display-md text-primary mb-1">Profil Saya</h1>
+          <p className="font-sans text-body-lg text-on-surface-variant">Atur data diri dan rekam jejak prestasimu.</p>
+        </div>
 
-          {err && (
-            <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl mb-5">
-              <TriangleAlert className="h-4 w-4 flex-shrink-0" /> {err}
-            </div>
-          )}
-          {ok && (
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-xl mb-5">
-              <CircleCheck className="h-4 w-4 flex-shrink-0" /> {ok}
-            </div>
-          )}
+        {err && (
+          <div className="flex items-center gap-3 bg-error-container/30 border border-error/20 text-error text-body-sm px-5 py-4 rounded-2xl mb-6">
+            <TriangleAlert className="h-5 w-5 flex-shrink-0" /> {err}
+          </div>
+        )}
+        {ok && (
+          <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-body-sm px-5 py-4 rounded-2xl mb-6">
+            <CircleCheck className="h-5 w-5 flex-shrink-0" /> {ok}
+          </div>
+        )}
 
-          {loading ? (
-            <div className="card p-16 text-center"><Loader2 className="h-7 w-7 animate-spin text-brand-400 mx-auto" /></div>
-          ) : (
-            <div className="space-y-5">
-              <div className="card p-6 flex items-center gap-5">
-                <div className="relative">
-                  <div className="w-20 h-20 rounded-full bg-brand-100 overflow-hidden flex items-center justify-center">
+        {loading ? (
+          <div className="bg-white p-24 rounded-3xl border border-outline-variant/60 shadow-sm flex items-center justify-center">
+            <Loader2 className="h-10 w-10 animate-spin text-secondary" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* Left Column: Summary & Wishlist */}
+            <div className="lg:col-span-4 space-y-8">
+              
+              {/* Profile Card */}
+              <div className="bg-white p-6 rounded-3xl border border-outline-variant/60 shadow-sm flex flex-col items-center text-center">
+                <div className="relative mb-4">
+                  <div className="w-28 h-28 rounded-full border-4 border-surface-container bg-surface-container overflow-hidden flex items-center justify-center shadow-inner">
                     {preview ? (
                       <img src={preview} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-2xl font-bold text-brand-600">{form.nama?.charAt(0).toUpperCase() || 'U'}</span>
+                      <span className="text-4xl font-display font-bold text-secondary">{form.nama?.charAt(0).toUpperCase() || 'U'}</span>
                     )}
                   </div>
-                  <label className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-brand-600 flex items-center justify-center cursor-pointer hover:bg-brand-700">
-                    <Camera className="h-3.5 w-3.5 text-white" />
+                  <label className="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-primary hover:opacity-90 flex items-center justify-center cursor-pointer transition-all shadow-md">
+                    <Camera className="h-4 w-4 text-white" />
                     <input type="file" accept="image/*" className="hidden" onChange={onFoto} />
                   </label>
                 </div>
-                <div>
-                  <p className="font-semibold text-gray-900">{form.nama || 'Belum ada nama'}</p>
-                  <p className="text-sm text-gray-400">{form.jurusan || 'Jurusan belum diisi'}</p>
-                </div>
+                
+                <h2 className="font-display text-headline-sm text-primary mb-1">{form.nama || 'Belum ada nama'}</h2>
+                <p className="font-sans text-body-sm text-on-surface-variant mb-4">{form.jurusan || 'Jurusan belum diisi'}</p>
+                <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-container text-secondary-container capitalize">
+                  {user.role}
+                </span>
               </div>
 
-              <div className="card p-6">
-                <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <UserCircle className="h-4 w-4 text-brand-600" /> Data Diri
+              {/* Wishlist Lomba */}
+              {user.role === 'mahasiswa' && (
+                <div className="bg-white p-6 rounded-3xl border border-outline-variant/60 shadow-sm">
+                  <h2 className="font-display font-semibold text-body-lg text-primary mb-4 flex items-center gap-2">
+                    <Bookmark className="h-5 w-5 text-secondary" /> 
+                    <span>Wishlist Lomba</span>
+                    <span className="font-sans text-xs text-on-surface-variant font-normal">({wishlist.length})</span>
+                  </h2>
+                  {wishlist.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Bookmark className="h-10 w-10 text-on-surface-variant/20 mx-auto mb-2" />
+                      <p className="font-sans text-body-sm text-on-surface-variant mb-4">Belum ada lomba yang disimpan.</p>
+                      <Link href="/lomba" className="font-label-lg text-secondary hover:underline">Cari lomba →</Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {wishlist.map((l) => (
+                        <Link key={l.id} href={`/lomba/${l.id}`}
+                          className="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-outline-variant/30 hover:border-secondary/40 hover:bg-surface transition-all">
+                          <div className="min-w-0">
+                            <p className="font-display font-semibold text-primary text-body-sm truncate">{l.judul}</p>
+                            {l.deadline_pendaftaran && (
+                              <p className="font-sans text-xs text-on-surface-variant flex items-center gap-1 mt-1">
+                                <Calendar className="h-3.5 w-3.5 shrink-0" />
+                                <span>{new Date(l.deadline_pendaftaran).toLocaleDateString('id-ID')}</span>
+                              </p>
+                            )}
+                          </div>
+                          <span className="px-2.5 py-1 rounded bg-surface-container text-primary font-semibold text-[10px] uppercase tracking-wider flex-shrink-0">{l.tingkat}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Right Column: Profile Edit Forms & Achievements */}
+            <div className="lg:col-span-8 space-y-8">
+              
+              {/* Form Data Diri */}
+              <div className="bg-white p-6 rounded-3xl border border-outline-variant/60 shadow-sm">
+                <h2 className="font-display font-semibold text-headline-sm text-primary mb-6 flex items-center gap-2">
+                  <UserCircle className="h-5 w-5 text-secondary" /> Data Diri
                 </h2>
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap</label>
-                    <input name="nama" value={form.nama} onChange={onField} className="input-base" />
+                    <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Nama Lengkap</label>
+                    <input name="nama" value={form.nama} onChange={onField} className="w-full rounded-xl border border-outline-variant/60 bg-surface px-4 py-3 text-primary font-sans text-body-sm shadow-sm focus:border-secondary focus:ring-secondary focus:bg-white transition-colors outline-none" />
                   </div>
                   {user.role === 'mahasiswa' && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">NIM</label>
-                        <input name="nim" value={form.nim} onChange={onField} className="input-base" />
+                        <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">NIM</label>
+                        <input name="nim" value={form.nim} onChange={onField} className="w-full rounded-xl border border-outline-variant/60 bg-surface px-4 py-3 text-primary font-sans text-body-sm shadow-sm focus:border-secondary focus:ring-secondary focus:bg-white transition-colors outline-none" />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Jurusan</label>
-                        <input name="jurusan" value={form.jurusan} onChange={onField} className="input-base" />
+                        <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Jurusan</label>
+                        <input name="jurusan" value={form.jurusan} onChange={onField} className="w-full rounded-xl border border-outline-variant/60 bg-surface px-4 py-3 text-primary font-sans text-body-sm shadow-sm focus:border-secondary focus:ring-secondary focus:bg-white transition-colors outline-none" />
                       </div>
                     </div>
                   )}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-                      <AtSign className="h-3.5 w-3.5 text-gray-400" /> Email
+                    <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <AtSign className="h-3.5 w-3.5 text-on-surface-variant/70" /> Email Address
                     </label>
-                    <input name="email" type="email" value={form.email} onChange={onField} className="input-base" />
+                    <input name="email" type="email" value={form.email} onChange={onField} className="w-full rounded-xl border border-outline-variant/60 bg-surface px-4 py-3 text-primary font-sans text-body-sm shadow-sm focus:border-secondary focus:ring-secondary focus:bg-white transition-colors outline-none" />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-                        <Phone className="h-3.5 w-3.5 text-gray-400" /> No. Telepon
+                      <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <Phone className="h-3.5 w-3.5 text-on-surface-variant/70" /> No. Telepon
                       </label>
-                      <input name="phone" value={form.phone} onChange={onField} placeholder="08xxxxxxxxxx" className="input-base" />
+                      <input name="phone" value={form.phone} onChange={onField} placeholder="08xxxxxxxxxx" className="w-full rounded-xl border border-outline-variant/60 bg-surface px-4 py-3 text-primary font-sans text-body-sm shadow-sm focus:border-secondary focus:ring-secondary focus:bg-white transition-colors outline-none" />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-                        <MessageCircle className="h-3.5 w-3.5 text-gray-400" /> WhatsApp
+                      <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <MessageCircle className="h-3.5 w-3.5 text-on-surface-variant/70" /> WhatsApp Number
                       </label>
-                      <input name="whatsapp" value={form.whatsapp} onChange={onField} placeholder="08xxxxxxxxxx" className="input-base" />
+                      <input name="whatsapp" value={form.whatsapp} onChange={onField} placeholder="08xxxxxxxxxx" className="w-full rounded-xl border border-outline-variant/60 bg-surface px-4 py-3 text-primary font-sans text-body-sm shadow-sm focus:border-secondary focus:ring-secondary focus:bg-white transition-colors outline-none" />
                     </div>
                   </div>
-                  <p className="text-xs text-gray-400">No. WhatsApp & email cuma dibuka ke rekan tim yang lamarannya kamu terima.</p>
+                  <p className="text-xs text-on-surface-variant mt-1 leading-normal">
+                    * No. WhatsApp & email hanya akan diperlihatkan kepada rekan tim yang lamarannya Anda setujui.
+                  </p>
                 </div>
               </div>
 
+              {/* Form Rekam Jejak Prestasi */}
               {user.role === 'mahasiswa' && (
-                <div className="card p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-                      <Medal className="h-4 w-4 text-brand-600" /> Rekam Jejak Prestasi
+                <div className="bg-white p-6 rounded-3xl border border-outline-variant/60 shadow-sm">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="font-display font-semibold text-headline-sm text-primary flex items-center gap-2">
+                      <Medal className="h-5 w-5 text-secondary" /> Rekam Jejak Prestasi
                     </h2>
-                    <button onClick={addPrestasi} className="inline-flex items-center gap-1 text-sm text-brand-600 font-medium hover:text-brand-700">
+                    <button onClick={addPrestasi} className="inline-flex items-center gap-1.5 text-sm text-secondary font-semibold hover:opacity-80 transition-all bg-surface-container px-3 py-1.5 rounded-lg">
                       <Plus className="h-4 w-4" /> Tambah
                     </button>
                   </div>
                   {prestasi.length === 0 ? (
-                    <p className="text-sm text-gray-400 text-center py-4">Belum ada prestasi.</p>
+                    <div className="text-center py-8 bg-surface rounded-2xl border border-dashed border-outline-variant/60">
+                      <Medal className="h-10 w-10 text-on-surface-variant/20 mx-auto mb-2" />
+                      <p className="font-sans text-body-sm text-on-surface-variant">Belum ada prestasi yang ditambahkan.</p>
+                    </div>
                   ) : (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {prestasi.map((p, i) => (
                         <div key={i} className="flex gap-2">
                           <input value={p.judul} onChange={(e) => setPrestasiVal(i, 'judul', e.target.value)}
@@ -220,47 +278,24 @@ export default function ProfilPage() {
                 </div>
               )}
 
-              <button onClick={simpan} disabled={saving} className="btn-primary w-full py-3">
-                {saving ? <><Loader2 className="h-4 w-4 animate-spin" /> Menyimpan...</> : <><Save className="h-4 w-4" /> Simpan Perubahan</>}
+              {/* Save Button */}
+              <button onClick={simpan} disabled={saving} className="w-full py-4 rounded-2xl bg-primary text-on-primary font-label-lg hover:opacity-90 active:scale-95 shadow-md transition-all flex items-center justify-center gap-2">
+                {saving ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>Menyimpan...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-5 w-5" />
+                    <span>Simpan Perubahan</span>
+                  </>
+                )}
               </button>
 
-              {/* Wishlist (khusus mahasiswa) */}
-              {user.role === 'mahasiswa' && (
-                <div className="card p-6">
-                  <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Bookmark className="h-4 w-4 text-brand-600" /> Wishlist Lomba
-                    <span className="text-xs text-gray-400 font-normal">({wishlist.length})</span>
-                  </h2>
-                  {wishlist.length === 0 ? (
-                    <div className="text-center py-6">
-                      <Bookmark className="h-10 w-10 text-gray-200 mx-auto mb-2" />
-                      <p className="text-sm text-gray-400 mb-3">Belum ada lomba yang disimpan.</p>
-                      <Link href="/lomba" className="text-sm text-brand-600 font-medium hover:text-brand-700">Cari lomba →</Link>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {wishlist.map((l) => (
-                        <Link key={l.id} href={`/lomba/${l.id}`}
-                          className="flex items-center justify-between gap-3 p-3 rounded-xl border border-gray-100 hover:border-brand-200 hover:bg-brand-50/40 transition">
-                          <div className="min-w-0">
-                            <p className="font-medium text-gray-800 text-sm truncate">{l.judul}</p>
-                            {l.deadline_pendaftaran && (
-                              <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                                <Calendar className="h-3 w-3" />
-                                {new Date(l.deadline_pendaftaran).toLocaleDateString('id-ID')}
-                              </p>
-                            )}
-                          </div>
-                          <span className="badge-gray capitalize flex-shrink-0">{l.tingkat}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

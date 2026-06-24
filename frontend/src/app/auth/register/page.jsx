@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/context/AuthContext';
-import { Trophy, Eye, EyeOff, AlertCircle, Loader2, CheckCircle, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, Loader2, CheckCircle, ArrowRight } from 'lucide-react';
 
 export default function RegisterPage() {
   const { register: registerAuth }  = useAuth();
@@ -27,7 +27,7 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 py-10">
       <div className="w-full max-w-md">
         <Link href="/" className="flex items-center justify-center gap-2 mb-8">
-          <Trophy className="h-7 w-7 text-brand-600" />
+          <img alt="AMBAChamp Logo" className="h-8 w-auto object-contain" src="/images/logo-ambachamp.png" />
           <span className="font-bold text-brand-700 text-xl">AmbaChamp</span>
         </Link>
 

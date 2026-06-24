@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation"; 
 import { useAuth } from "@/context/AuthContext";
 import { notifAPI } from "@/lib/api";
-import { Trophy, Search, Users, UserCircle, ShieldCheck, Bell, Clock, CheckCircle2, UserPlus, Check, ChevronDown, LogOut, LayoutDashboard } from "lucide-react";
+import { Search, Users, UserCircle, ShieldCheck, Bell, Clock, CheckCircle2, UserPlus, Check, ChevronDown, LogOut, LayoutDashboard } from "lucide-react";
 
 export default function Navbar() {
   const [showNotif, setShowNotif] = useState(false);
@@ -63,194 +63,189 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          
+    <header className="sticky top-0 left-0 w-full z-50 bg-surface/85 backdrop-blur-md border-b border-outline-variant px-lg h-20 transition-all">
+      <div className="max-w-container-max mx-auto h-full flex items-center justify-between">
+        
+        <div className="flex items-center gap-xl">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-indigo-600">
-            <Trophy className="h-8 w-8" />
-            <span className="font-extrabold text-2xl tracking-tight">AmbaChamp</span>
+          <Link href="/" className="flex items-center gap-2">
+            <img alt="AMBAChamp Logo" className="h-10 w-auto object-contain" src="/images/logo-ambachamp.png" />
+            <span className="font-display text-headline-md font-bold text-primary">AMBAChamp</span>
           </Link>
           
-          {/* Navigasi Utama — sama untuk semua user & pengunjung */}
-          <nav className="hidden md:flex gap-8">
+          {/* Navigasi Utama */}
+          <nav className="hidden md:flex items-center gap-lg">
             <Link
               href="/explore"
-              className={`flex items-center gap-2 font-medium transition-colors ${pathname === '/explore' ? 'text-indigo-600' : 'text-slate-600 hover:text-indigo-600'}`}
+              className={`font-label-lg py-1 transition-colors ${pathname === '/explore' ? 'text-secondary border-b-2 border-secondary' : 'text-on-surface-variant hover:text-primary'}`}
             >
-              Kategori
+              Find Competitions
             </Link>
-            <Link
-              href="/#rekomendasi"
-              className="flex items-center gap-2 font-medium text-slate-600 hover:text-indigo-600 transition-colors"
-            >
-              Rekomendasi
-            </Link>
-            <Link
-              href="/#fitur"
-              className="flex items-center gap-2 font-medium text-slate-600 hover:text-indigo-600 transition-colors"
-            >
-              Fitur
-            </Link>
+            {user?.role === 'mahasiswa' && (
+              <Link
+                href="/teammate/list"
+                className={`font-label-lg py-1 transition-colors ${pathname.startsWith('/teammate') ? 'text-secondary border-b-2 border-secondary' : 'text-on-surface-variant hover:text-primary'}`}
+              >
+                Teammate Finder
+              </Link>
+            )}
             <Link
               href="/#tentang-kami"
-              className="flex items-center gap-2 font-medium text-slate-600 hover:text-indigo-600 transition-colors"
+              className="font-label-lg text-on-surface-variant hover:text-primary transition-colors py-1"
             >
-              Tentang Kami
+              About
             </Link>
           </nav>
-          {/* Area Kanan */}
-          <div className="flex items-center gap-4">
-            {!loading && !user && (
-              <>
-                <Link 
-                  href="/auth/login" 
-                  className="hidden sm:inline-flex font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+        </div>
+
+        {/* Area Kanan */}
+        <div className="flex items-center gap-md">
+          {!loading && !user && (
+            <>
+              <Link 
+                href="/auth/login" 
+                className="hidden sm:inline-flex font-label-lg text-primary hover:text-secondary transition-colors"
+              >
+                Masuk
+              </Link>
+              <Link 
+                href="/auth/register" 
+                className="hidden sm:inline-flex bg-primary text-on-primary px-lg py-2.5 rounded-lg font-label-lg hover:opacity-90 active:scale-95 transition-all shadow-sm"
+              >
+                Daftar
+              </Link>
+            </>
+          )}
+
+          {!loading && user && (
+            <>
+              {/* Notifikasi Dropdown */}
+              <div className="relative" ref={notifRef}>
+                <button 
+                  onClick={() => setShowNotif(!showNotif)}
+                  className={`relative p-2 transition-all rounded-full flex items-center justify-center ${showNotif ? 'text-secondary bg-surface-container' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container'}`}
+                  aria-label="Buka notifikasi"
                 >
-                  Masuk
-                </Link>
-                <Link 
-                  href="/auth/register" 
-                  className="hidden sm:inline-flex bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-sm"
-                >
-                  Daftar
-                </Link>
-              </>
-            )}
+                  <span className="material-symbols-outlined text-2xl">notifications</span>
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 bg-error rounded-full border-2 border-surface"></span>
+                  )}
+                </button>
 
-            {!loading && user && (
-              <>
-                <div className="h-6 w-px bg-slate-200 hidden sm:block mx-2"></div>
-
-                {/* Notifikasi Dropdown */}
-                <div className="relative" ref={notifRef}>
-                  <button 
-                    onClick={() => setShowNotif(!showNotif)}
-                    className={`relative p-2 transition-colors rounded-full ${showNotif ? 'text-indigo-600 bg-slate-100' : 'text-slate-500 hover:text-indigo-600 hover:bg-slate-100'}`}
-                    aria-label="Buka notifikasi"
-                  >
-                    <Bell className="h-5 w-5" />
-                    {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 h-2.5 w-2.5 bg-rose-500 rounded-full border-2 border-white"></span>
-                    )}
-                  </button>
-
-                  {showNotif && (
-                    <div className="absolute right-0 top-full mt-3 w-[320px] sm:w-[380px] bg-white rounded-3xl shadow-xl border border-slate-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200">
-                      <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                        <h3 className="font-extrabold text-slate-900 text-lg">Notifikasi</h3>
-                        {unreadCount > 0 && (
-                          <button onClick={tandaiSemuaDibaca} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
-                            <Check className="h-3.5 w-3.5" /> Tandai dibaca
-                          </button>
-                        )}
-                      </div>
-                      <div className="max-h-[400px] overflow-y-auto divide-y divide-slate-100">
-                        {notifs.length === 0 ? (
-                          <div className="p-8 text-center text-sm text-slate-400">Belum ada notifikasi.</div>
-                        ) : notifs.map((notif) => (
-                          <div key={notif.id} className={`p-4 flex gap-4 hover:bg-slate-50 transition-colors cursor-pointer ${!notif.is_read ? 'bg-indigo-50/30' : ''}`}>
-                            <div className="h-10 w-10 rounded-full flex items-center justify-center shrink-0 bg-indigo-100 text-indigo-600">
-                              <Bell className="h-5 w-5" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex justify-between items-start mb-1">
-                                <h4 className={`text-sm ${!notif.is_read ? 'font-bold text-slate-900' : 'font-semibold text-slate-700'}`}>
-                                  {notif.judul}
-                                </h4>
-                                {!notif.is_read && (
-                                  <span className="h-2 w-2 rounded-full bg-indigo-600 shrink-0 mt-1.5"></span>
-                                )}
-                              </div>
-                              <p className="text-sm text-slate-600 leading-relaxed mb-1 line-clamp-2">
-                                {notif.pesan}
-                              </p>
-                              <span className="text-xs font-medium text-slate-400">
-                                {waktuRelatif(notif.created_at)}
-                              </span>
-                            </div>
+                {showNotif && (
+                  <div className="absolute right-0 top-full mt-3 w-[320px] sm:w-[380px] bg-surface-container-lowest rounded-3xl shadow-xl border border-outline-variant z-50 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200">
+                    <div className="p-4 border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
+                      <h3 className="font-display font-bold text-primary text-base">Notifikasi</h3>
+                      {unreadCount > 0 && (
+                        <button onClick={tandaiSemuaDibaca} className="text-xs font-bold text-secondary hover:text-secondary-container flex items-center gap-1">
+                          <span className="material-symbols-outlined text-xs">done_all</span> Tandai dibaca
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-[400px] overflow-y-auto divide-y divide-outline-variant">
+                      {notifs.length === 0 ? (
+                        <div className="p-8 text-center text-body-sm text-on-surface-variant">Belum ada notifikasi.</div>
+                      ) : notifs.map((notif) => (
+                        <div key={notif.id} className={`p-4 flex gap-4 hover:bg-surface-container-low transition-colors cursor-pointer ${!notif.is_read ? 'bg-surface-container-high/30' : ''}`}>
+                          <div className="h-10 w-10 rounded-full flex items-center justify-center shrink-0 bg-surface-container-high text-primary">
+                            <span className="material-symbols-outlined text-lg">notifications</span>
                           </div>
-                        ))}
-                      </div>
-                      <div className="p-3 border-t border-slate-100 bg-slate-50/50 text-center">
-                        <Link 
-                          href="/notifikasi" 
-                          onClick={() => setShowNotif(false)}
-                          className="text-sm font-bold text-indigo-600 hover:text-indigo-700 block w-full"
-                        >
-                          Lihat semua notifikasi
-                        </Link>
-                      </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-start mb-1">
+                              <h4 className={`text-body-sm truncate ${!notif.is_read ? 'font-bold text-primary' : 'font-semibold text-on-surface'}`}>
+                                {notif.judul}
+                              </h4>
+                              {!notif.is_read && (
+                                <span className="h-2 w-2 rounded-full bg-secondary shrink-0 mt-1.5"></span>
+                              )}
+                            </div>
+                            <p className="text-body-sm text-on-surface-variant leading-relaxed mb-1 line-clamp-2">
+                              {notif.pesan}
+                            </p>
+                            <span className="text-label-sm text-on-surface-variant font-medium">
+                              {waktuRelatif(notif.created_at)}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  )}
-                </div>
-
-                {/* Profil */}
-                <div className="relative" ref={profileRef}>
-                  <button
-                    onClick={() => setShowProfile(!showProfile)}
-                    className={`flex items-center gap-2 font-medium transition-colors rounded-full py-1.5 pl-1.5 pr-3 ${pathname === '/profil' ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100'}`}
-                    aria-expanded={showProfile}
-                    aria-label="Buka menu profil"
-                  >
-                    <UserCircle className="h-7 w-7" />
-                    <span className="hidden sm:inline max-w-32 truncate">{displayName}</span>
-                    <ChevronDown className={`hidden sm:block h-4 w-4 transition-transform ${showProfile ? 'rotate-180' : ''}`} />
-                  </button>
-
-                  {showProfile && (
-                    <div className="absolute right-0 top-full mt-3 w-56 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200">
-                      <div className="px-4 py-3 border-b border-slate-100">
-                        <p className="text-sm font-bold text-slate-900 truncate">{displayName}</p>
-                        <p className="text-xs text-slate-500 truncate">{user.email}</p>
-                      </div>
-                      <Link
-                        href="/profil"
-                        onClick={() => setShowProfile(false)}
-                        className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600"
+                    <div className="p-3 border-t border-outline-variant bg-surface-container-low text-center">
+                      <Link 
+                        href="/notifikasi" 
+                        onClick={() => setShowNotif(false)}
+                        className="text-body-sm font-bold text-secondary hover:text-secondary-container block w-full"
                       >
-                        <UserCircle className="h-4 w-4" />
-                        Profil Saya
+                        Lihat semua notifikasi
                       </Link>
-                      {user.role === 'mahasiswa' && (
-                        <Link href="/dashboard" onClick={() => setShowProfile(false)}
-                          className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600">
-                          <LayoutDashboard className="h-4 w-4" />
-                          Dashboard
-                        </Link>
-                      )}
-                      {user.role === 'penyelenggara' && (
-                        <Link href="/penyelenggara/dashboard" onClick={() => setShowProfile(false)}
-                          className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600">
-                          <LayoutDashboard className="h-4 w-4" />
-                          Dashboard Penyelenggara
-                        </Link>
-                      )}
-                      {user.role === 'admin' && (
-                        <Link href="/admin/dashboard" onClick={() => setShowProfile(false)}
-                          className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600">
-                          <LayoutDashboard className="h-4 w-4" />
-                          Dashboard Admin
-                        </Link>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowProfile(false);
-                          logout();
-                        }}
-                        className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-semibold text-rose-600 hover:bg-rose-50"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        Logout
-                      </button>
                     </div>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Profil */}
+              <div className="relative" ref={profileRef}>
+                <button
+                  onClick={() => setShowProfile(!showProfile)}
+                  className={`flex items-center gap-2 font-display text-label-lg transition-colors rounded-full py-1.5 pl-1.5 pr-3 ${pathname === '/profil' ? 'text-secondary bg-surface-container-high' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-low'}`}
+                  aria-expanded={showProfile}
+                  aria-label="Buka menu profil"
+                >
+                  <span className="material-symbols-outlined text-2xl">account_circle</span>
+                  <span className="hidden sm:inline max-w-32 truncate">{displayName}</span>
+                  <span className="material-symbols-outlined text-base transition-transform duration-200">keyboard_arrow_down</span>
+                </button>
+
+                {showProfile && (
+                  <div className="absolute right-0 top-full mt-3 w-56 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant z-50 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200">
+                    <div className="px-4 py-3 border-b border-outline-variant bg-surface-container-low">
+                      <p className="text-label-lg font-bold text-primary truncate">{displayName}</p>
+                      <p className="text-label-sm text-on-surface-variant truncate">{user.email}</p>
+                    </div>
+                    <Link
+                      href="/profil"
+                      onClick={() => setShowProfile(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-body-sm font-semibold text-on-surface hover:bg-surface-container-low hover:text-secondary"
+                    >
+                      <span className="material-symbols-outlined text-lg">account_circle</span>
+                      Profil Saya
+                    </Link>
+                    {user.role === 'mahasiswa' && (
+                      <Link href="/dashboard" onClick={() => setShowProfile(false)}
+                        className="flex items-center gap-2 px-4 py-3 text-body-sm font-semibold text-on-surface hover:bg-surface-container-low hover:text-secondary">
+                        <span className="material-symbols-outlined text-lg">dashboard</span>
+                        Dashboard
+                      </Link>
+                    )}
+                    {user.role === 'penyelenggara' && (
+                      <Link href="/penyelenggara/dashboard" onClick={() => setShowProfile(false)}
+                        className="flex items-center gap-2 px-4 py-3 text-body-sm font-semibold text-on-surface hover:bg-surface-container-low hover:text-secondary">
+                        <span className="material-symbols-outlined text-lg">dashboard</span>
+                        Dashboard Penyelenggara
+                      </Link>
+                    )}
+                    {user.role === 'admin' && (
+                      <Link href="/admin/dashboard" onClick={() => setShowProfile(false)}
+                        className="flex items-center gap-2 px-4 py-3 text-body-sm font-semibold text-on-surface hover:bg-surface-container-low hover:text-secondary">
+                        <span className="material-symbols-outlined text-lg">dashboard</span>
+                        Dashboard Admin
+                      </Link>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowProfile(false);
+                        logout();
+                      }}
+                      className="flex w-full items-center gap-2 px-4 py-3 text-left text-body-sm font-semibold text-error hover:bg-error-container/20"
+                    >
+                      <span className="material-symbols-outlined text-lg">logout</span>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </header>

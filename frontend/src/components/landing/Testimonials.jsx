@@ -27,47 +27,33 @@ const testimonials = [
 // 1. Mengubah menjadi export default
 export default function Testimonials() {
   return (
-    <section className="py-10">
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <span className="text-indigo-600 font-semibold tracking-wider uppercase text-sm mb-2 block">Testimoni</span>
-        <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6">Cerita Sukses Para Juara</h2>
-        <p className="text-slate-600 text-lg">Ribuan mahasiswa telah menemukan peluang emas mereka di AmbaChamp. Kini giliranmu untuk bersinar.</p>
+    <section className="py-xxl bg-surface-container-low font-sans rounded-3xl overflow-hidden px-gutter relative transition-all my-xxl">
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 opacity-10">
+        <span className="material-symbols-outlined text-[300px] leading-none">format_quote</span>
+      </div>
+      <div className="text-center max-w-3xl mx-auto mb-xl relative space-y-xs">
+        <span className="text-secondary font-label-lg uppercase tracking-wider block">Testimoni</span>
+        <h2 className="font-display text-headline-lg text-primary">Apa Kata Para Juara?</h2>
+        <p className="text-on-surface-variant text-body-md">Kisah sukses dari mereka yang berhasil melampaui batas dan membangun karir melalui AMBAChamp.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-md relative z-10">
         {testimonials.map((testi, i) => (
-          <div key={i} className="bg-white p-8 md:p-10 rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-2 transition-transform duration-300 relative flex flex-col h-full">
-            
-            {/* Quote Icon Background */}
-            <div className="absolute top-8 right-8 text-slate-100">
-              <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.017 21L16.417 14.591C17.067 12.836 17.653 11.238 18.176 9.797H14.521V3H24V9.894C24 13.972 22.84 17.674 20.52 21H14.017ZM3.517 21L5.917 14.591C6.567 12.836 7.153 11.238 7.676 9.797H4.021V3H13.5V9.894C13.5 13.972 12.34 17.674 10.02 21H3.517Z" />
-              </svg>
-            </div>
-            
-            <div className="flex gap-1 mb-8">
-              {[...Array(testi.stars)].map((_, idx) => (
-                <Star key={idx} className="w-5 h-5 fill-amber-400 text-amber-400" />
-              ))}
-            </div>
-            
-            <p className="text-slate-700 text-lg leading-relaxed mb-10 relative z-10 flex-grow">
+          <div key={i} className="bg-surface-container-lowest p-lg rounded-[24px] border border-outline-variant shadow-sm flex flex-col justify-between hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+            <p className="text-body-md italic text-on-surface-variant mb-xl leading-relaxed">
               "{testi.quote}"
             </p>
-            
-            <div className="flex items-center gap-4 mt-auto border-t border-slate-100 pt-6">
-              {/* 2. Mengganti ImageWithFallback dengan tag <img> standar */}
+            <div className="flex items-center gap-md pt-md border-t border-outline-variant">
               <img 
                 src={testi.image} 
                 alt={testi.name} 
-                className="w-14 h-14 rounded-full object-cover shadow-sm" 
+                className="w-12 h-12 rounded-full object-cover shadow-sm bg-surface-variant" 
               />
               <div>
-                <h4 className="font-bold text-slate-900">{testi.name}</h4>
-                <p className="text-sm text-slate-500 font-medium">{testi.role}</p>
+                <h4 className="font-display text-label-lg text-primary">{testi.name}</h4>
+                <p className="text-label-sm text-on-surface-variant">{testi.role}</p>
               </div>
             </div>
-            
           </div>
         ))}
       </div>

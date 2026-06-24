@@ -17,6 +17,7 @@ export default function CreateLombaPage() {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const { onChange: onPosterChange, ...posterRegister } = register('poster');
 
   const onFileChange = (e) => {
     const file = e.target.files[0];
@@ -28,7 +29,7 @@ export default function CreateLombaPage() {
     setLoading(true);
     try {
       const fd = new FormData();
-      Object.entries(data).forEach(([k, v]) => { if (v !== undefined && v !== '') fd.append(k, v); });
+      Object.entries(data).forEach(([k, v]) => { if (k !== 'poster' && v !== undefined && v !== '') fd.append(k, v); });
       if (data.poster?.[0]) fd.append('poster', data.poster[0]);
 
       await lombaAPI.create(fd);
@@ -160,7 +161,11 @@ export default function CreateLombaPage() {
                   <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
                 )}
                 <input type="file" accept="image/*" className="hidden" id="poster-upload"
-                  {...register('poster')} onChange={onFileChange} />
+                  {...posterRegister}
+                  onChange={(e) => {
+                    onFileChange(e);
+                    onPosterChange(e);
+                  }} />
                 <label htmlFor="poster-upload"
                   className="cursor-pointer text-sm text-brand-600 font-medium hover:text-brand-700">
                   {preview ? 'Ganti Poster' : 'Upload Poster'} (JPG/PNG, maks 5MB)

@@ -144,7 +144,7 @@ export default function AdminLombaPage() {
                     <td className="px-5 py-4">
                       <div className="flex flex-col gap-1.5">
                         {lomba.poster && (
-                          <a href={`${process.env.NEXT_PUBLIC_UPLOAD_URL}/posters/${lomba.poster}`} target="_blank" rel="noopener noreferrer"
+                          <a href={`${process.env.NEXT_PUBLIC_UPLOAD_URL || 'http://localhost:5000/uploads'}/posters/${lomba.poster}`} target="_blank" rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 hover:text-brand-700 hover:underline">
                             <FileText className="h-3.5 w-3.5" /> Poster
                           </a>

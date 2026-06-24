@@ -19,6 +19,7 @@ export default function EditLombaPage() {
   const [fetching, setFetching] = useState(true);
   const [preview, setPreview] = useState(null);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const { onChange: onPosterChange, ...posterRegister } = register('poster');
 
   // ambil data lomba lama, isi ke form
   useEffect(() => {
@@ -35,7 +36,8 @@ export default function EditLombaPage() {
           link_sosmed: d.link_sosmed || '',
           contact_person: d.contact_person || '',
         });
-        if (d.poster) setPreview(`${process.env.NEXT_PUBLIC_UPLOAD_URL}/posters/${d.poster}`);
+        const uploadUrl = process.env.NEXT_PUBLIC_UPLOAD_URL || 'http://localhost:5000/uploads';
+        if (d.poster) setPreview(`${uploadUrl}/posters/${d.poster}`);
       })
       .catch(() => setError('Gagal memuat data lomba.'))
       .finally(() => setFetching(false));
@@ -51,7 +53,7 @@ export default function EditLombaPage() {
     setLoading(true);
     try {
       const fd = new FormData();
-      Object.entries(data).forEach(([k, v]) => { if (v !== undefined && v !== '') fd.append(k, v); });
+      Object.entries(data).forEach(([k, v]) => { if (k !== 'poster' && v !== undefined && v !== '') fd.append(k, v); });
       if (data.poster?.[0]) fd.append('poster', data.poster[0]);
 
       await lombaAPI.update(id, fd);
@@ -188,7 +190,11 @@ export default function EditLombaPage() {
                   <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
                 )}
                 <input type="file" accept="image/*" className="hidden" id="poster-upload"
-                  {...register('poster')} onChange={onFileChange} />
+                  {...posterRegister}
+                  onChange={(e) => {
+                    onFileChange(e);
+                    onPosterChange(e);
+                  }} />
                 <label htmlFor="poster-upload"
                   className="cursor-pointer text-sm text-brand-600 font-medium hover:text-brand-700">
                   {preview ? 'Ganti Poster' : 'Upload Poster'} (JPG/PNG, maks 5MB)

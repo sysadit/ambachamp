@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  Trophy, Search, ShieldCheck, Users, Bell, ArrowRight,
+  Search, ShieldCheck, Users, Bell, ArrowRight,
   Star, ChevronRight, Medal, Target, TrendingUp, Zap,
   Phone, Mail, Instagram, MapPin
 } from 'lucide-react';
@@ -89,13 +89,13 @@ export default function HomePage() {
         </div>
 
         {/* ── FAQ ──────────────────────────────────────────── */}
-      <section id="faq" className="bg-white py-20">
-        <div className="container-main">
+      <section id="faq" className="bg-surface py-20 px-gutter">
+        <div className="max-w-container-max mx-auto">
           <div className="text-center mb-12">
-            <span className="text-sm font-semibold text-brand-600 uppercase tracking-wider">FAQ</span>
-            <h2 className="text-3xl font-bold text-gray-900 mt-2">Pertanyaan yang Sering Ditanya</h2>
+            <span className="font-label-lg text-secondary uppercase tracking-widest">FAQ</span>
+            <h2 className="font-display-lg text-display-lg text-primary mt-2">Pertanyaan yang Sering Ditanya</h2>
           </div>
-          <div className="max-w-2xl mx-auto divide-y divide-gray-100 border border-gray-100 rounded-2xl overflow-hidden">
+          <div className="max-w-2xl mx-auto divide-y divide-outline-variant/30 border border-outline-variant/50 bg-white rounded-3xl overflow-hidden shadow-sm">
             {FAQ_ITEMS.map((item, i) => (
               <FaqRow key={i} q={item.q} a={item.a} />
             ))}
@@ -113,15 +113,23 @@ export default function HomePage() {
 function FaqRow({ q, a }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-white">
+    <div className="bg-white transition-all duration-300">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-gray-50 transition"
+        className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-surface-container-low/50 transition-all duration-200"
       >
-        <span className="text-sm font-semibold text-gray-800">{q}</span>
-        <span className="text-brand-500 text-xl leading-none flex-shrink-0">{open ? '−' : '+'}</span>
+        <span className="font-headline-sm text-body-md font-semibold text-primary">{q}</span>
+        <span className={`material-symbols-outlined text-secondary transition-transform duration-300 ${open ? 'rotate-180' : ''}`}>
+          keyboard_arrow_down
+        </span>
       </button>
-      {open && <p className="px-5 pb-4 text-sm text-gray-500 leading-relaxed">{a}</p>}
+      <div 
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${open ? 'max-h-48 border-t border-outline-variant/20' : 'max-h-0'}`}
+      >
+        <p className="px-6 py-5 font-body-sm text-body-sm text-on-surface-variant leading-relaxed bg-surface/30">
+          {a}
+        </p>
+      </div>
     </div>
   );
 }
