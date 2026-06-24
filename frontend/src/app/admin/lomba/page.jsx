@@ -94,7 +94,7 @@ export default function AdminLombaPage() {
           ].map(t => (
             <button key={t.v} onClick={() => setTab(t.v)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
-                tab === t.v ? 'bg-brand-600 text-white shadow-brand' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                tab === t.v ? 'bg-violet-600 text-white shadow-md' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
               }`}>
               {t.l}
               {t.v === 'pending' && pendingCt > 0 && (
