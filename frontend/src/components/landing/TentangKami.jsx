@@ -77,38 +77,37 @@ const teamMembers = [
 
 export default function TentangKami() {
   return (
-    <section className="py-10" id="tentang-kami">
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <span className="text-indigo-600 font-semibold tracking-wider uppercase text-sm mb-2 block">Tentang Kami</span>
-        <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6">Tim di Balik AmbaChamp</h2>
-        <p className="text-slate-600 text-lg">Berkenalan dengan talenta kreatif yang berdedikasi membangun platform terbaik untuk membantu mahasiswa meraih prestasi bersama.</p>
+    <section className="py-xxl font-sans" id="tentang-kami">
+      <div className="text-center max-w-3xl mx-auto mb-xl space-y-xs">
+        <span className="text-secondary font-label-lg uppercase tracking-wider block">Tentang Kami</span>
+        <h2 className="font-display text-headline-lg text-primary">Tim di Balik AmbaChamp</h2>
+        <p className="text-on-surface-variant text-body-md">Berkenalan dengan talenta kreatif yang berdedikasi membangun platform terbaik untuk membantu mahasiswa meraih prestasi bersama.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
         {teamMembers.map((member, i) => (
-          <div key={i} className="group bg-white p-8 rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-2 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 text-center flex flex-col items-center">
-            <div className="relative mb-6">
-              <div className="absolute inset-0 bg-indigo-600 rounded-full blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-300 transform scale-110"></div>
+          <div key={i} className="group bg-surface-container-lowest p-lg rounded-[24px] border border-outline-variant shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300 text-center flex flex-col items-center">
+            <div className="relative mb-md">
+              <div className="absolute inset-0 bg-secondary rounded-full blur-md opacity-0 group-hover:opacity-20 transition-opacity duration-300 transform scale-110"></div>
               <img 
                 src={member.image} 
                 alt={member.name} 
-                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md relative z-10" 
+                className="w-32 h-32 rounded-full object-cover border-4 border-surface shadow-md relative z-10" 
               />
             </div>
             
-            <h3 className="text-xl font-bold text-slate-900 mb-1">{member.name}</h3>
-            {/* NIM ditambahkan di sini dengan desain badge/teks kecil agar rapi */}
-            <p className="text-sm font-mono text-slate-500 bg-slate-50 px-3 py-1 rounded-full mb-3">{member.nim}</p>
-            <p className="text-indigo-600 font-medium mb-4">{member.role}</p>
+            <h3 className="font-display text-headline-sm text-primary mb-1">{member.name}</h3>
+            <p className="text-label-sm font-mono text-on-surface-variant bg-surface-container px-3 py-1 rounded-full mb-2">{member.nim}</p>
+            <p className="text-secondary font-medium mb-md">{member.role}</p>
             
-            <div className="flex gap-3 justify-center mt-auto opacity-70 group-hover:opacity-100 transition-opacity">
-              <a href={member.github || "#"} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+            <div className="flex gap-sm justify-center mt-auto opacity-80 group-hover:opacity-100 transition-opacity">
+              <a href={member.github || "#"} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">
                 <Github className="w-4 h-4" />
               </a>
-              <a href={member.linkedin || "#"} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 transition-colors">
+              <a href={member.linkedin || "#"} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center hover:bg-secondary hover:text-on-secondary transition-all">
                 <Linkedin className="w-4 h-4" />
               </a>
-              <a href={member.instagram || "#"} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-pink-50 hover:text-pink-600 transition-colors">
+              <a href={member.instagram || "#"} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center hover:bg-secondary hover:text-on-secondary transition-all">
                 <Instagram className="w-4 h-4" />
               </a>
             </div>

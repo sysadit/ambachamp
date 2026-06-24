@@ -28,7 +28,7 @@ export default function CreateLombaPage() {
     setLoading(true);
     try {
       const fd = new FormData();
-      Object.entries(data).forEach(([k, v]) => { if (v !== undefined && v !== '') fd.append(k, v); });
+      Object.entries(data).forEach(([k, v]) => { if (k !== 'poster' && v !== undefined && v !== '') fd.append(k, v); });
       if (data.poster?.[0]) fd.append('poster', data.poster[0]);
 
       await lombaAPI.create(fd);

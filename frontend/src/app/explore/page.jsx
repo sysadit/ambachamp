@@ -6,7 +6,7 @@ import Footer from '@/components/layout/Footer';
 import LombaCard from '@/components/lomba/LombaCard';
 import { lombaAPI, wishlistAPI } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
-import { Search, Filter, Loader2, Trophy } from "lucide-react";
+import { Search, Filter, Loader2 } from "lucide-react";
 
 const KATEGORI_OPTS = [
   { value: 'Semua', label: 'Semua Kategori' },
@@ -100,26 +100,26 @@ export default function ExplorePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
+    <div className="min-h-screen bg-surface text-primary font-sans flex flex-col">
       <Navbar />
 
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-10">
         <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-slate-900">Eksplorasi Lomba</h1>
-          <p className="text-slate-600 mt-2 text-lg">Temukan kompetisi yang tepat untuk mengasah potensimu dan bangun portofolio terbaikmu.</p>
+          <h1 className="font-display text-display-md text-primary">Eksplorasi Lomba</h1>
+          <p className="font-sans text-body-lg text-on-surface-variant mt-2">Temukan kompetisi yang tepat untuk mengasah potensimu dan bangun portofolio terbaikmu.</p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
           <aside className="w-full lg:w-72 flex-shrink-0 space-y-6">
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm sticky top-24">
-              <div className="flex items-center justify-between mb-6 text-slate-900">
+            <div className="bg-white p-6 rounded-3xl border border-outline-variant/60 shadow-sm sticky top-24">
+              <div className="flex items-center justify-between mb-6 text-primary">
                 <div className="flex items-center gap-2">
-                  <Filter className="h-5 w-5 text-indigo-600" />
-                  <h2 className="font-bold text-lg">Filter Pencarian</h2>
+                  <Filter className="h-5 w-5 text-secondary" />
+                  <h2 className="font-display font-semibold text-body-lg text-primary">Filter Pencarian</h2>
                 </div>
                 {(activeKategori !== 'Semua' || activeTingkat !== 'Semua' || activeBiaya !== 'Semua' || keyword) && (
-                  <button onClick={resetFilters} className="text-xs text-rose-500 hover:text-rose-700 font-semibold transition-colors">
+                  <button onClick={resetFilters} className="text-xs text-error hover:opacity-80 font-semibold transition-colors">
                     Reset
                   </button>
                 )}
@@ -128,7 +128,7 @@ export default function ExplorePage() {
               <div className="space-y-6">
                 {/* Filter Kategori */}
                 <div>
-                  <label className="block text-sm font-bold text-slate-800 mb-3">Kategori</label>
+                  <label className="block text-sm font-bold text-primary mb-3">Kategori</label>
                   <div className="space-y-3">
                     {KATEGORI_OPTS.map(cat => (
                       <label key={cat.value} className="flex items-center gap-3 cursor-pointer group">
@@ -136,9 +136,9 @@ export default function ExplorePage() {
                           type="checkbox"
                           checked={activeKategori === cat.value}
                           onChange={() => setActiveKategori(cat.value)}
-                          className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 transition-colors cursor-pointer accent-indigo-600"
+                          className="w-4 h-4 rounded border-outline-variant/60 text-secondary focus:ring-secondary transition-colors cursor-pointer accent-secondary"
                         />
-                        <span className={`font-medium transition-colors ${activeKategori === cat.value ? 'text-indigo-600 font-bold' : 'text-slate-600 group-hover:text-slate-900'}`}>
+                        <span className={`font-medium transition-colors ${activeKategori === cat.value ? 'text-secondary font-bold' : 'text-on-surface-variant group-hover:text-primary'}`}>
                           {cat.label}
                         </span>
                       </label>
@@ -147,8 +147,8 @@ export default function ExplorePage() {
                 </div>
 
                 {/* Filter Tingkat */}
-                <div className="pt-6 border-t border-slate-100">
-                  <label className="block text-sm font-bold text-slate-800 mb-3">Tingkat Wilayah</label>
+                <div className="pt-6 border-t border-outline-variant/30">
+                  <label className="block text-sm font-bold text-primary mb-3">Tingkat Wilayah</label>
                   <div className="space-y-3">
                     {TINGKAT_OPTS.map(level => (
                       <label key={level.value} className="flex items-center gap-3 cursor-pointer group">
@@ -156,9 +156,9 @@ export default function ExplorePage() {
                           type="checkbox"
                           checked={activeTingkat === level.value}
                           onChange={() => setActiveTingkat(level.value)}
-                          className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 transition-colors cursor-pointer accent-indigo-600"
+                          className="w-4 h-4 rounded border-outline-variant/60 text-secondary focus:ring-secondary transition-colors cursor-pointer accent-secondary"
                         />
-                        <span className={`font-medium transition-colors ${activeTingkat === level.value ? 'text-indigo-600 font-bold' : 'text-slate-600 group-hover:text-slate-900'}`}>
+                        <span className={`font-medium transition-colors ${activeTingkat === level.value ? 'text-secondary font-bold' : 'text-on-surface-variant group-hover:text-primary'}`}>
                           {level.label}
                         </span>
                       </label>
@@ -167,12 +167,12 @@ export default function ExplorePage() {
                 </div>
 
                 {/* Filter Biaya */}
-                <div className="pt-6 border-t border-slate-100">
-                  <label className="block text-sm font-bold text-slate-800 mb-3">Biaya Pendaftaran</label>
+                <div className="pt-6 border-t border-outline-variant/30">
+                  <label className="block text-sm font-bold text-primary mb-3">Biaya Pendaftaran</label>
                   <select
                     value={activeBiaya}
                     onChange={e => setActiveBiaya(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-slate-50 py-2.5 px-3 text-slate-700 font-medium shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white transition-colors cursor-pointer outline-none"
+                    className="w-full rounded-xl border border-outline-variant/60 bg-surface py-2.5 px-3 text-primary font-medium shadow-sm focus:border-secondary focus:ring-secondary focus:bg-white transition-colors cursor-pointer outline-none"
                   >
                     <option value="Semua">Semua Biaya</option>
                     <option value="Gratis">Gratis</option>
@@ -188,18 +188,18 @@ export default function ExplorePage() {
             {/* Search Bar */}
             <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-on-surface-variant/70" />
                 <input
                   type="text"
                   placeholder="Cari nama lomba atau penyelenggara..."
                   value={searchVal}
                   onChange={e => setSearchVal(e.target.value)}
-                  className="w-full pl-14 pr-4 py-4 rounded-2xl border border-slate-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-slate-900 font-medium bg-white transition-colors outline-none"
+                  className="w-full pl-14 pr-4 py-4 rounded-2xl border border-outline-variant/60 shadow-sm focus:border-secondary focus:ring-secondary text-primary font-medium bg-white transition-colors outline-none h-[56px]"
                 />
               </div>
               <button
                 type="submit"
-                className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-md active:scale-95 w-full sm:w-auto"
+                className="bg-primary hover:opacity-90 active:scale-95 text-on-primary px-8 py-4 rounded-2xl font-label-lg transition-all shadow-md w-full sm:w-auto h-[56px] flex items-center justify-center"
               >
                 Cari
               </button>
@@ -207,26 +207,26 @@ export default function ExplorePage() {
 
             {/* Grid Lomba */}
             {loading ? (
-              <div className="flex justify-center items-center py-24 bg-white rounded-[2rem] border border-slate-200 shadow-sm">
-                <Loader2 className="h-10 w-10 animate-spin text-indigo-600" />
+              <div className="flex justify-center items-center py-24 bg-white rounded-[2rem] border border-outline-variant/60 shadow-sm">
+                <Loader2 className="h-10 w-10 animate-spin text-secondary" />
               </div>
             ) : lombaList.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-24 bg-white rounded-[2rem] border border-slate-200 shadow-sm px-6 text-center">
-                <Trophy className="h-16 w-16 text-slate-200 mb-4" />
-                <h3 className="text-xl font-bold text-slate-800">Lomba tidak ditemukan</h3>
-                <p className="text-slate-500 mt-2 max-w-sm">
+              <div className="flex flex-col items-center justify-center py-24 bg-white rounded-[2rem] border border-outline-variant/60 shadow-sm px-6 text-center">
+                <img src="/images/logo-ambachamp.png" alt="AMBAChamp" className="h-16 w-auto object-contain opacity-20 grayscale mb-4" />
+                <h3 className="font-display text-headline-sm text-primary">Lomba tidak ditemukan</h3>
+                <p className="font-sans text-body-sm text-on-surface-variant mt-2 max-w-sm">
                   Tidak ada kompetisi aktif yang sesuai dengan filter atau kata kunci pencarian Anda. Coba ubah pencarian Anda.
                 </p>
                 <button
                   onClick={resetFilters}
-                  className="mt-6 px-5 py-2.5 bg-indigo-50 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-100 transition-colors"
+                  className="mt-6 px-5 py-2.5 bg-surface-container text-secondary font-semibold rounded-xl hover:bg-surface-container-high/60 transition-colors"
                 >
                   Reset Filter
                 </button>
               </div>
             ) : (
               <div>
-                <p className="text-sm text-slate-500 mb-4 font-medium">{lombaList.length} lomba ditemukan</p>
+                <p className="font-sans text-body-sm text-on-surface-variant mb-4">{lombaList.length} lomba ditemukan</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {lombaList.map(lomba => (
                     <LombaCard

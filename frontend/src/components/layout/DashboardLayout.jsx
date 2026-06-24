@@ -12,25 +12,25 @@ import {
 // Sidebar links per role
 const SIDEBAR = {
   mahasiswa: [
-    { href: '/dashboard',     icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/lomba',         icon: Search,          label: 'Mencari Lomba' },
-    { href: '/teammate/list', icon: Users,           label: 'Tim List' },
-    { href: '/wishlist',      icon: Bookmark,        label: 'Wishlist' },
-    { href: '/notifikasi',    icon: Bell,            label: 'Notifikasi' },
+    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { href: '/lomba', icon: Search, label: 'Mencari Lomba' },
+    { href: '/teammate/list', icon: Users, label: 'Tim List' },
+    { href: '/wishlist', icon: Bookmark, label: 'Wishlist' },
+    { href: '/notifikasi', icon: Bell, label: 'Notifikasi' },
   ],
   penyelenggara: [
-    { href: '/penyelenggara/dashboard',    icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/penyelenggara/lomba',        icon: Trophy,          label: 'Lomba Saya' },
-    { href: '/penyelenggara/lomba/create', icon: Plus,            label: 'Upload Lomba Baru' },
-    { href: '/penyelenggara/grup',         icon: FolderKanban,    label: 'Grup Tim Peserta' },
-    { href: '/notifikasi',                 icon: Bell,            label: 'Notifikasi' },
+    { href: '/penyelenggara/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { href: '/penyelenggara/lomba', icon: Trophy, label: 'Lomba Saya' },
+    { href: '/penyelenggara/lomba/create', icon: Plus, label: 'Upload Lomba Baru' },
+    { href: '/penyelenggara/grup', icon: FolderKanban, label: 'Grup Tim Peserta' },
+    { href: '/notifikasi', icon: Bell, label: 'Notifikasi' },
   ],
   admin: [
     { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/admin/lomba',     icon: ShieldCheck,     label: 'Verifikasi Lomba' },
-    { href: '/admin/all-lomba', icon: ListChecks,      label: 'Semua Lomba' },
-    { href: '/admin/users',     icon: UserCog,         label: 'Kelola Pengguna' },
-    { href: '/notifikasi',      icon: Bell,            label: 'Notifikasi' },
+    { href: '/admin/lomba', icon: ShieldCheck, label: 'Verifikasi Lomba' },
+    { href: '/admin/all-lomba', icon: ListChecks, label: 'Semua Lomba' },
+    { href: '/admin/users', icon: UserCog, label: 'Kelola Pengguna' },
+    { href: '/notifikasi', icon: Bell, label: 'Notifikasi' },
   ],
 };
 
@@ -47,34 +47,27 @@ export default function DashboardLayout({ children, title }) {
       <Navbar />
       <div className="flex flex-1">
         {/* Sidebar */}
-        <aside className="hidden md:flex flex-col w-60 bg-white border-r border-slate-200 min-h-[calc(100vh-64px)] sticky top-16">
+        <aside className="hidden md:flex flex-col w-60 bg-white border-r border-slate-200 min-h-[calc(100vh-64px)] sticky top-20">
           <div className="flex-1 py-4 px-3 space-y-1">
             <p className="text-xs font-semibold text-slate-400 uppercase px-3 mb-2">Menu</p>
             {links.map(({ href, icon: Icon, label }) => (
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
-                  pathname === href || pathname.startsWith(href + '/')
-                    ? 'bg-brand-50 text-brand-700'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                }`}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${pathname === href || pathname.startsWith(href + '/')
+                  ? 'bg-brand-50 text-brand-700'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  }`}
               >
                 <Icon className="h-4 w-4 flex-shrink-0" />
                 {label}
               </Link>
             ))}
           </div>
-          <div className="p-3 border-t border-slate-100">
-            <button onClick={logout}
-              className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition">
-              <LogOut className="h-4 w-4" /> Keluar
-            </button>
-          </div>
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 p-6 bg-slate-50 min-w-0">
+        <main className="flex-1 p-6 bg-slate-50 min-w-0 mt-20">
           {title && (
             <h1 className="text-2xl font-bold text-slate-800 mb-6">{title}</h1>
           )}

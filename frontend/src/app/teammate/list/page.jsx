@@ -51,43 +51,43 @@ export default function TeammateListPage() {
   return (
     <DashboardLayout title="Kelola Tim List">
       <div className="mb-6">
-        <p className="text-sm text-slate-500">Kelola postingan tim yang kamu buka serta pantau status pendaftaran tim yang kamu lamar.</p>
+        <p className="font-sans text-body-sm text-on-surface-variant">Kelola postingan tim yang kamu buka serta pantau status pendaftaran tim yang kamu lamar.</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-4 border-b border-slate-200 mb-6 overflow-x-auto">
+      <div className="flex gap-4 border-b border-outline-variant/30 mb-6 overflow-x-auto">
         <button
           onClick={() => setTab('buat')}
-          className={`px-6 py-3 font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 ${
+          className={`px-6 py-3 font-label-lg whitespace-nowrap transition-all border-b-2 flex items-center gap-2 ${
             tab === 'buat'
-              ? 'border-brand-600 text-brand-700'
-              : 'border-transparent text-slate-500 hover:text-slate-700'
+              ? 'border-secondary text-secondary font-bold'
+              : 'border-transparent text-on-surface-variant hover:text-primary'
           }`}
         >
           <Users className="h-4 w-4" />
           Lowongan Tim Saya
           {myPosts.length > 0 && (
-            <span className="text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">{myPosts.length}</span>
+            <span className="text-[10px] bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full font-bold">{myPosts.length}</span>
           )}
         </button>
         <button
           onClick={() => setTab('lamar')}
-          className={`px-6 py-3 font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 ${
+          className={`px-6 py-3 font-label-lg whitespace-nowrap transition-all border-b-2 flex items-center gap-2 ${
             tab === 'lamar'
-              ? 'border-brand-600 text-brand-700'
-              : 'border-transparent text-slate-500 hover:text-slate-700'
+              ? 'border-secondary text-secondary font-bold'
+              : 'border-transparent text-on-surface-variant hover:text-primary'
           }`}
         >
           <Inbox className="h-4 w-4" />
           Tim yang Dilamar
           {myApps.length > 0 && (
-            <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{myApps.length}</span>
+            <span className="text-[10px] bg-surface-container text-on-surface px-2 py-0.5 rounded-full font-bold">{myApps.length}</span>
           )}
         </button>
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-brand-400" /></div>
+        <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-secondary" /></div>
       ) : tab === 'buat' ? (
         <TabLowonganSaya posts={myPosts} onReload={loadData} />
       ) : (
@@ -101,13 +101,13 @@ export default function TeammateListPage() {
 function TabLowonganSaya({ posts, onReload }) {
   if (posts.length === 0) {
     return (
-      <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center shadow-sm">
-        <Users className="h-12 w-12 text-slate-200 mx-auto mb-3" />
-        <p className="font-semibold text-slate-600 mb-1">Belum ada tim yang dibuat</p>
-        <p className="text-sm text-slate-400 max-w-sm mx-auto mb-5">
+      <div className="bg-white rounded-3xl border border-outline-variant/60 p-12 text-center shadow-sm">
+        <Users className="h-12 w-12 text-on-surface-variant/20 mx-auto mb-3" />
+        <p className="font-semibold text-primary mb-1">Belum ada tim yang dibuat</p>
+        <p className="text-sm text-on-surface-variant max-w-sm mx-auto mb-5">
           Buka postingan lowongan tim dari halaman detail lomba yang ingin kamu ikuti.
         </p>
-        <Link href="/lomba" className="btn-primary inline-flex py-2.5 px-5">
+        <Link href="/lomba" className="inline-flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-xl font-label-lg hover:opacity-90 transition-all shadow-md">
           Cari Lomba & Buat Tim
         </Link>
       </div>
@@ -128,7 +128,6 @@ function PostCardKelola({ post, onReload }) {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState(null);
-  const [telegramInputs, setTelegramInputs] = useState({});
   const [closing, setClosing] = useState(false);
 
   let posisiList = [];
@@ -186,30 +185,30 @@ function PostCardKelola({ post, onReload }) {
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden hover:border-slate-300 transition">
+    <div className="bg-white rounded-3xl border border-outline-variant/60 shadow-sm overflow-hidden hover:border-secondary/30 transition-all duration-300">
       <div className="p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="bg-brand-50 text-brand-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+              <span className="bg-surface-container text-secondary-container text-xs font-bold px-3 py-1 rounded-lg uppercase tracking-wider shadow-2xs">
                 {post.judul_lomba}
               </span>
               <span className={post.status === 'open' ? 'badge-green' : 'badge-gray'}>
                 {post.status === 'open' ? 'Terbuka' : 'Ditutup'}
               </span>
             </div>
-            <h3 className="text-xl font-bold text-slate-800">{post.judul}</h3>
+            <h3 className="font-display text-xl font-bold text-primary">{post.judul}</h3>
             {post.deskripsi_lomba && (
-              <div className="flex items-start gap-1.5 text-xs text-slate-500 bg-slate-50 p-2.5 rounded-xl max-w-2xl border border-slate-100">
-                <Info className="h-3.5 w-3.5 text-slate-400 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-1.5 text-xs text-on-surface-variant bg-surface p-2.5 rounded-xl max-w-2xl border border-outline-variant/30">
+                <Info className="h-3.5 w-3.5 text-secondary shrink-0 mt-0.5" />
                 <p className="line-clamp-2"><strong>Deskripsi Lomba:</strong> {post.deskripsi_lomba}</p>
               </div>
             )}
-            <p className="text-sm text-slate-600 pt-1 leading-relaxed">{post.deskripsi}</p>
-            <div className="flex items-center gap-2 flex-wrap text-xs text-slate-500 pt-2 font-medium">
+            <p className="font-sans text-body-sm text-on-surface-variant pt-1 leading-relaxed">{post.deskripsi}</p>
+            <div className="flex items-center gap-2 flex-wrap text-xs text-on-surface-variant pt-2 font-medium">
               <span>Posisi Dibutuhkan:</span>
               {posisiList.map((pos, idx) => (
-                <span key={idx} className="bg-purple-50 text-purple-700 px-2.5 py-1 rounded-lg">
+                <span key={idx} className="bg-surface-container text-secondary px-2.5 py-1 rounded-lg">
                   {pos}
                 </span>
               ))}
@@ -221,14 +220,14 @@ function PostCardKelola({ post, onReload }) {
               <button
                 onClick={handleClosePost}
                 disabled={closing}
-                className="btn-secondary text-xs px-4 py-2 font-bold hover:text-red-600 hover:bg-red-50 border-slate-200"
+                className="border border-outline-variant hover:border-error hover:text-error hover:bg-error-container/10 text-primary text-xs px-4 py-2.5 font-bold rounded-xl transition-all"
               >
                 Tutup Lowongan
               </button>
             )}
             <button
               onClick={toggle}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 bg-brand-50 hover:bg-brand-100 px-4 py-2.5 rounded-xl transition"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-secondary bg-surface-container hover:opacity-90 px-4 py-2.5 rounded-xl transition-all"
             >
               {open ? (
                 <>Tutup Pelamar <ChevronUp className="h-4 w-4" /></>
@@ -241,47 +240,47 @@ function PostCardKelola({ post, onReload }) {
       </div>
 
       {open && (
-        <div className="bg-slate-50/50 border-t border-slate-100 p-6 space-y-4">
-          <h4 className="font-bold text-sm text-slate-700 flex items-center gap-2">
-            <Users className="h-4 w-4 text-slate-400" />
+        <div className="bg-surface border-t border-outline-variant/30 p-6 space-y-4">
+          <h4 className="font-display font-semibold text-body-sm text-primary flex items-center gap-2">
+            <Users className="h-4 w-4 text-secondary" />
             Daftar Pelamar ({applicants.length})
           </h4>
 
           {loading ? (
-            <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-brand-400" /></div>
+            <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-secondary" /></div>
           ) : applicants.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-4">Belum ada pelamar untuk lowongan tim ini.</p>
+            <p className="text-sm text-on-surface-variant text-center py-4">Belum ada pelamar untuk lowongan tim ini.</p>
           ) : (
             <div className="grid grid-cols-1 gap-4">
               {applicants.map(app => (
-                <div key={app.id} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div key={app.id} className="bg-white p-5 rounded-2xl border border-outline-variant/40 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-outline-variant transition-all">
                   <div className="space-y-2">
                     <div>
-                      <span className="bg-indigo-100 text-indigo-700 text-2xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
+                      <span className="bg-surface-container text-secondary text-2xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
                         Melamar: {app.posisi}
                       </span>
-                      <h5 className="font-bold text-slate-800 text-base mt-1">{app.nama_pelamar}</h5>
-                      <p className="text-xs text-slate-400 font-medium">NIM: {app.nim} · Jurusan: {app.jurusan}</p>
+                      <h5 className="font-display font-bold text-primary text-base mt-1">{app.nama_pelamar}</h5>
+                      <p className="text-xs text-on-surface-variant font-medium">NIM: {app.nim} · Jurusan: {app.jurusan}</p>
                     </div>
 
                     {app.pesan && (
-                      <p className="text-xs text-slate-600 italic bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                      <p className="text-xs text-on-surface-variant italic bg-surface p-2.5 rounded-lg border border-outline-variant/30">
                         "{app.pesan}"
                       </p>
                     )}
 
                     {/* Kontak Detail */}
-                    <div className="flex items-center gap-4 text-xs text-slate-500 pt-1 flex-wrap">
+                    <div className="flex items-center gap-4 text-xs text-on-surface-variant pt-1 flex-wrap font-medium">
                       {app.email && (
-                        <span className="flex items-center gap-1"><Mail className="h-3 w-3 shrink-0" /> {app.email}</span>
+                        <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5 text-on-surface-variant/70 shrink-0" /> {app.email}</span>
                       )}
                       {app.phone && (
-                        <span className="flex items-center gap-1"><Phone className="h-3 w-3 shrink-0" /> {app.phone}</span>
+                        <span className="flex items-center gap-1"><Phone className="h-3.5 w-3.5 text-on-surface-variant/70 shrink-0" /> {app.phone}</span>
                       )}
                       {app.whatsapp && (
                         <a href={`https://wa.me/${app.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-medium">
-                          <MessageCircle className="h-3 w-3 shrink-0" /> WA: {app.whatsapp} <ExternalLink className="h-2.5 w-2.5" />
+                          className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-semibold">
+                          <MessageCircle className="h-3.5 w-3.5 shrink-0" /> WA: {app.whatsapp} <ExternalLink className="h-2.5 w-2.5" />
                         </a>
                       )}
                     </div>
@@ -293,14 +292,14 @@ function PostCardKelola({ post, onReload }) {
                         <button
                           onClick={() => handleDecision(app.id, 'ditolak')}
                           disabled={busyId === app.id}
-                          className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 hover:border-red-300 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1 transition"
+                          className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 hover:border-red-300 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1 transition-all"
                         >
                           <CircleX className="h-3.5 w-3.5" /> Tolak
                         </button>
                         <button
                           onClick={() => handleDecision(app.id, 'diterima')}
                           disabled={busyId === app.id}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1 transition shadow-sm"
+                          className="bg-primary hover:opacity-90 text-on-primary px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1 transition shadow-sm"
                         >
                           {busyId === app.id ? (
                             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -330,13 +329,13 @@ function PostCardKelola({ post, onReload }) {
 function TabLamarSaya({ apps }) {
   if (apps.length === 0) {
     return (
-      <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center shadow-sm">
-        <Inbox className="h-12 w-12 text-slate-200 mx-auto mb-3" />
-        <p className="font-semibold text-slate-600 mb-1">Belum melamar tim manapun</p>
-        <p className="text-sm text-slate-400 max-w-sm mx-auto mb-5">
+      <div className="bg-white rounded-3xl border border-outline-variant/60 p-12 text-center shadow-sm">
+        <Inbox className="h-12 w-12 text-on-surface-variant/20 mx-auto mb-3" />
+        <p className="font-semibold text-primary mb-1">Belum melamar tim manapun</p>
+        <p className="text-sm text-on-surface-variant max-w-sm mx-auto mb-5">
           Cari tim di kompetisi yang ingin kamu ikuti dan klik "Minta untuk Bergabung".
         </p>
-        <Link href="/lomba" className="btn-primary inline-flex py-2.5 px-5">
+        <Link href="/lomba" className="inline-flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-xl font-label-lg hover:opacity-90 transition-all shadow-md">
           Cari Lowongan Tim Lomba
         </Link>
       </div>
@@ -356,22 +355,22 @@ function TabLamarSaya({ apps }) {
         const StatusIcon = conf.Icon;
 
         return (
-          <div key={a.id} className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div key={a.id} className="bg-white rounded-3xl border border-outline-variant/60 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="bg-brand-50 text-brand-700 text-xs font-semibold px-2.5 py-0.5 rounded-lg">
+                <span className="bg-surface-container text-secondary text-xs font-semibold px-2.5 py-0.5 rounded-lg shadow-2xs">
                   {a.judul_lomba}
                 </span>
                 <span className={conf.cls + " flex items-center gap-1 text-2xs"}>
                   <StatusIcon className="h-3 w-3" /> {conf.label}
                 </span>
               </div>
-              <h3 className="font-bold text-slate-800 text-lg">{a.judul_post}</h3>
-              <p className="text-sm text-slate-500">
-                Posisi dilamar: <span className="font-semibold text-slate-700">{a.posisi}</span> · Ketua: <span className="font-medium text-slate-600">{a.nama_pembuat}</span>
+              <h3 className="font-display font-bold text-primary text-lg">{a.judul_post}</h3>
+              <p className="text-sm text-on-surface-variant">
+                Posisi dilamar: <span className="font-semibold text-primary">{a.posisi}</span> · Ketua: <span className="font-medium text-primary/80">{a.nama_pembuat}</span>
               </p>
               {a.pesan && (
-                <p className="text-xs text-slate-400 italic mt-1 bg-slate-50 px-3 py-2 rounded-lg border border-slate-100 max-w-lg">
+                <p className="text-xs text-on-surface-variant italic mt-1 bg-surface px-3 py-2 rounded-lg border border-outline-variant/30 max-w-lg">
                   "{a.pesan}"
                 </p>
               )}
@@ -393,7 +392,7 @@ function TabLamarSaya({ apps }) {
                   </a>
                 </div>
               ) : a.status === 'diterima' ? (
-                <span className="text-xs text-slate-400 italic">Menunggu link Telegram dari ketua tim</span>
+                <span className="text-xs text-on-surface-variant italic">Menunggu link Telegram dari ketua tim</span>
               ) : null}
             </div>
           </div>
