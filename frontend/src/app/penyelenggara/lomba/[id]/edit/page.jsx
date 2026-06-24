@@ -19,6 +19,7 @@ export default function EditLombaPage() {
   const [fetching, setFetching] = useState(true);
   const [preview, setPreview] = useState(null);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const { onChange: onPosterChange, ...posterRegister } = register('poster');
 
   // ambil data lomba lama, isi ke form
   useEffect(() => {
@@ -189,7 +190,11 @@ export default function EditLombaPage() {
                   <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
                 )}
                 <input type="file" accept="image/*" className="hidden" id="poster-upload"
-                  {...register('poster')} onChange={onFileChange} />
+                  {...posterRegister}
+                  onChange={(e) => {
+                    onFileChange(e);
+                    onPosterChange(e);
+                  }} />
                 <label htmlFor="poster-upload"
                   className="cursor-pointer text-sm text-brand-600 font-medium hover:text-brand-700">
                   {preview ? 'Ganti Poster' : 'Upload Poster'} (JPG/PNG, maks 5MB)
